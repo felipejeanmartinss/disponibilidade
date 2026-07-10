@@ -1,4 +1,9 @@
 import { APP_CONFIG } from "./config/constants.js";
+
+import {
+    SALES_CHANNEL_OPTIONS,
+} from "./config/channels.js";
+
 import { AppView } from "./views/AppView.js";
 
 function bootstrap() {
@@ -12,7 +17,10 @@ function bootstrap() {
 
     const appView = new AppView(rootElement);
 
-    appView.render(APP_CONFIG);
+    appView.render(
+        APP_CONFIG,
+        SALES_CHANNEL_OPTIONS
+    );
 
     console.info(
         `${APP_CONFIG.name} v${APP_CONFIG.version} iniciado com sucesso.`
@@ -22,7 +30,10 @@ function bootstrap() {
 try {
     bootstrap();
 } catch (error) {
-    console.error("Falha ao iniciar a aplicação:", error);
+    console.error(
+        "Falha ao iniciar a aplicação:",
+        error
+    );
 
     document.body.innerHTML = `
         <main>

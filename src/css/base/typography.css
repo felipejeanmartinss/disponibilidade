@@ -1,7 +1,9 @@
 body {
     font-family: var(--font-family-base);
     color: var(--color-text);
+    font-size: var(--font-size-base);
     line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
 }
 
 h1,
@@ -13,10 +15,17 @@ h3 {
 
 h1 {
     font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
 }
 
 h2 {
     font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
 }
 
 p {
