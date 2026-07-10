@@ -1,29 +1,84 @@
 :root {
-    --color-primary-500: #0057b8;
-    --color-primary-600: #00489a;
-    --color-primary-700: #003b7d;
+    /* Marca e interface */
+    --color-primary-50: #eef5ff;
+    --color-primary-100: #d9e9ff;
+    --color-primary-500: #1565c0;
+    --color-primary-600: #0d57aa;
+    --color-primary-700: #08478e;
+    --color-primary-900: #092f57;
 
+    /* Neutros */
     --color-white: #ffffff;
+    --color-black: #000000;
+
+    --color-gray-25: #fcfcfd;
     --color-gray-50: #f8fafc;
     --color-gray-100: #f1f5f9;
     --color-gray-200: #e2e8f0;
     --color-gray-300: #cbd5e1;
+    --color-gray-400: #94a3b8;
     --color-gray-500: #64748b;
+    --color-gray-600: #475569;
     --color-gray-700: #334155;
+    --color-gray-800: #1e293b;
     --color-gray-900: #0f172a;
 
-    --color-success: #15803d;
-    --color-warning: #ca8a04;
-    --color-danger: #b91c1c;
-    --color-info: #0369a1;
+    /* Feedback */
+    --color-success-50: #f0fdf4;
+    --color-success-100: #dcfce7;
+    --color-success-500: #22c55e;
+    --color-success-700: #15803d;
 
-    --color-background: var(--color-gray-100);
+    --color-warning-100: #fef3c7;
+    --color-warning-500: #eab308;
+    --color-warning-700: #a16207;
+
+    --color-danger-100: #fee2e2;
+    --color-danger-600: #dc2626;
+    --color-danger-700: #b91c1c;
+
+    --color-info-100: #e0f2fe;
+    --color-info-500: #0ea5e9;
+    --color-info-700: #0369a1;
+
+    /* Status das unidades */
+    --status-available-background: #dcdcdc;
+    --status-available-text: #111827;
+
+    --status-sold-background: rgb(0 67 200);
+    --status-sold-text: #ffffff;
+
+    --status-signing-background: rgb(150 100 200);
+    --status-signing-text: #ffffff;
+
+    --status-contract-background: rgb(80 170 225);
+    --status-contract-text: #0f172a;
+
+    --status-approved-background: rgb(235 185 45);
+    --status-approved-text: #0f172a;
+
+    --status-reserved-background: rgb(255 255 0);
+    --status-reserved-text: #0f172a;
+
+    /* Canais de vendas */
+    --channel-tegra-sales: #0057b8;
+    --channel-tegra-partnerships: #008f68;
+    --channel-lopes-rio: #d6262f;
+    --channel-somma-rio: #00205f;
+    --channel-evs: #7c3aed;
+    --channel-unassigned: #94a3b8;
+
+    /* Uso semântico */
+    --color-background: #f3f6fa;
     --color-surface: var(--color-white);
+    --color-surface-muted: var(--color-gray-50);
     --color-text: var(--color-gray-900);
     --color-text-muted: var(--color-gray-500);
     --color-border: var(--color-gray-200);
 
+    /* Tipografia */
     --font-family-base:
+        Inter,
         Arial,
         Helvetica,
         sans-serif;
@@ -35,6 +90,12 @@
     --font-size-xl: 1.5rem;
     --font-size-2xl: 2rem;
 
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Espaçamentos */
     --spacing-1: 0.25rem;
     --spacing-2: 0.5rem;
     --spacing-3: 0.75rem;
@@ -43,16 +104,30 @@
     --spacing-6: 1.5rem;
     --spacing-8: 2rem;
     --spacing-10: 2.5rem;
+    --spacing-12: 3rem;
 
+    /* Bordas */
     --radius-sm: 0.375rem;
     --radius-md: 0.625rem;
-    --radius-lg: 1rem;
+    --radius-lg: 0.875rem;
+    --radius-xl: 1.25rem;
+    --radius-pill: 999px;
 
-    --shadow-sm: 0 1px 3px rgb(15 23 42 / 10%);
-    --shadow-md: 0 8px 24px rgb(15 23 42 / 12%);
+    /* Sombras */
+    --shadow-xs: 0 1px 2px rgb(15 23 42 / 5%);
+    --shadow-sm:
+        0 1px 3px rgb(15 23 42 / 8%),
+        0 1px 2px rgb(15 23 42 / 4%);
 
-    --container-max-width: 1440px;
+    --shadow-md:
+        0 8px 24px rgb(15 23 42 / 8%);
 
+    /* Dimensões */
+    --container-max-width: 1600px;
+    --sidebar-width: 300px;
+    --header-height: 76px;
+
+    /* Animações */
     --transition-fast: 150ms ease;
     --transition-base: 250ms ease;
 }

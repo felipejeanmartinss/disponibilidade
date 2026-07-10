@@ -1,0 +1,70 @@
+.toolbar {
+    display: grid;
+
+    grid-template-columns:
+        minmax(180px, 1.2fr)
+        minmax(140px, 0.8fr)
+        minmax(140px, 0.8fr)
+        minmax(220px, 1.5fr);
+
+    gap: var(--spacing-4);
+
+    padding: var(--spacing-5);
+    margin-bottom: var(--spacing-5);
+
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+}
+
+.toolbar-field {
+    min-width: 0;
+}
+
+.toolbar-field__label {
+    display: block;
+    margin-bottom: var(--spacing-2);
+
+    color: var(--color-gray-600);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.toolbar-field__control {
+    width: 100%;
+    min-height: 42px;
+
+    padding:
+        var(--spacing-2)
+        var(--spacing-3);
+
+    color: var(--color-gray-800);
+
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+
+    outline: none;
+
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.toolbar-field__control:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgb(21 101 192 / 12%);
+}
+
+@media (max-width: 960px) {
+    .toolbar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    .toolbar {
+        grid-template-columns: 1fr;
+    }
+}

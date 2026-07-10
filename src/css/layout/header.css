@@ -1,0 +1,111 @@
+.app-header {
+    min-height: var(--header-height);
+    display: flex;
+    align-items: center;
+
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.app-header__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-6);
+}
+
+.app-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+}
+
+.app-brand__symbol {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+
+    color: var(--color-white);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-primary-500),
+            var(--color-primary-900)
+        );
+
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.app-brand__text {
+    min-width: 0;
+}
+
+.app-brand__eyebrow {
+    margin: 0 0 var(--spacing-1);
+
+    color: var(--color-primary-600);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.app-brand__title {
+    margin: 0;
+    font-size: var(--font-size-xl);
+}
+
+.app-header__context {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+}
+
+.project-context {
+    text-align: right;
+}
+
+.project-context__label {
+    display: block;
+
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.project-context__name {
+    display: block;
+
+    color: var(--color-gray-800);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+
+    color: var(--color-primary-700);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+
+    background: var(--color-primary-100);
+    border: 1px solid var(--color-primary-100);
+    border-radius: 50%;
+}
+
+@media (max-width: 700px) {
+    .project-context {
+        display: none;
+    }
+
+    .app-brand__eyebrow {
+        display: none;
+    }
+}
