@@ -13,3 +13,10 @@ Os estilos estruturais ficam em:
 
 ```text
 src/css/layout/
+
+## Componente de unidade
+
+O card de unidade é renderizado pela classe:
+
+```text
+src/js/views/UnitCardView.js

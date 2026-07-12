@@ -1,3 +1,5 @@
+import { UnitCardView } from "./UnitCardView.js";
+
 export class AppView {
     constructor(rootElement) {
         if (!(rootElement instanceof HTMLElement)) {
@@ -9,7 +11,7 @@ export class AppView {
         this.rootElement = rootElement;
     }
 
-    render(config, channels) {
+    render(config, channels, units) {
         const channelLegend = channels
             .map(
                 (channel) => `
@@ -25,6 +27,27 @@ export class AppView {
                 `
             )
             .join("");
+
+        const unitCards =
+            UnitCardView.renderList(units);
+
+        const availableUnits = units.filter(
+            (unit) => unit.status === "available"
+        ).length;
+
+        const reservedUnits = units.filter(
+            (unit) => unit.status === "reserved"
+        ).length;
+
+        const soldUnits = units.filter(
+            (unit) => unit.status === "sold"
+        ).length;
+
+        const salesRate = units.length
+            ? Math.round(
+                (soldUnits / units.length) * 100
+            )
+            : 0;
 
         this.rootElement.innerHTML = `
             <div class="app-shell">
@@ -167,17 +190,13 @@ export class AppView {
                                     </span>
                                 </header>
 
-                                <div class="workspace-panel__placeholder">
-                                    <div>
-                                        <h3>
-                                            Grid de unidades
-                                        </h3>
-
-                                        <p>
-                                            O mapa comercial será inserido
-                                            nesta área na próxima sprint.
-                                        </p>
-                                    </div>
+                                <div
+                                    class="unit-grid"
+                                    aria-label="
+                                        Mapa comercial das unidades
+                                    "
+                                >
+                                    ${unitCards}
                                 </div>
                             </section>
 
@@ -195,7 +214,7 @@ export class AppView {
                                         </span>
 
                                         <strong class="kpi-item__value">
-                                            64
+                                            ${units.length}
                                         </strong>
                                     </div>
 
@@ -205,7 +224,7 @@ export class AppView {
                                         </span>
 
                                         <strong class="kpi-item__value">
-                                            64
+                                            ${availableUnits}
                                         </strong>
                                     </div>
 
@@ -215,7 +234,7 @@ export class AppView {
                                         </span>
 
                                         <strong class="kpi-item__value">
-                                            0
+                                            ${reservedUnits}
                                         </strong>
                                     </div>
 
@@ -225,7 +244,7 @@ export class AppView {
                                         </span>
 
                                         <strong class="kpi-item__value">
-                                            0
+                                            ${soldUnits}
                                         </strong>
                                     </div>
 
@@ -235,7 +254,7 @@ export class AppView {
                                         </span>
 
                                         <strong class="kpi-item__value">
-                                            0%
+                                            ${salesRate}%
                                         </strong>
                                     </div>
                                 </div>
