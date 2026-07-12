@@ -1,0 +1,234 @@
+.unit-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(90px, 1fr));
+    gap: var(--spacing-3);
+}
+
+.unit-card {
+    --unit-card-background:
+        var(--status-available-background);
+
+    --unit-card-text:
+        var(--status-available-text);
+
+    position: relative;
+
+    min-width: 0;
+    min-height: 118px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: var(--spacing-1);
+
+    padding: var(--spacing-4);
+
+    color: var(--unit-card-text);
+    text-align: center;
+
+    background: var(--unit-card-background);
+    border: 1px solid rgb(15 23 42 / 10%);
+    border-radius: var(--radius-lg);
+
+    box-shadow:
+        0 1px 2px rgb(15 23 42 / 8%),
+        inset 0 1px rgb(255 255 255 / 20%);
+
+    cursor: pointer;
+
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        filter var(--transition-fast);
+}
+
+.unit-card:hover {
+    z-index: 1;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 24px rgb(15 23 42 / 14%),
+        inset 0 1px rgb(255 255 255 / 20%);
+}
+
+.unit-card:active {
+    transform: translateY(-1px);
+}
+
+.unit-card:focus-visible {
+    z-index: 2;
+
+    outline: 3px solid rgb(21 101 192 / 32%);
+    outline-offset: 3px;
+}
+
+.unit-card__number {
+    color: inherit;
+    font-size: 1.65rem;
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+}
+
+.unit-card__status {
+    color: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+}
+
+.unit-card__channel-name {
+    max-width: 100%;
+
+    overflow: hidden;
+
+    color: inherit;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.2;
+
+    opacity: 0.78;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.unit-card__channel-dot {
+    --channel-dot-color:
+        var(--channel-unassigned);
+
+    position: absolute;
+    top: var(--spacing-3);
+    right: var(--spacing-3);
+
+    width: 0.75rem;
+    height: 0.75rem;
+
+    background: var(--channel-dot-color);
+
+    border: 2px solid rgb(255 255 255 / 92%);
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 1px rgb(15 23 42 / 18%),
+        0 2px 4px rgb(15 23 42 / 12%);
+}
+
+.unit-card__channel-dot[
+    data-channel="tegra-sales"
+] {
+    --channel-dot-color:
+        var(--channel-tegra-sales);
+}
+
+.unit-card__channel-dot[
+    data-channel="tegra-partnerships"
+] {
+    --channel-dot-color:
+        var(--channel-tegra-partnerships);
+}
+
+.unit-card__channel-dot[
+    data-channel="lopes-rio"
+] {
+    --channel-dot-color:
+        var(--channel-lopes-rio);
+}
+
+.unit-card__channel-dot[
+    data-channel="somma-rio"
+] {
+    --channel-dot-color:
+        var(--channel-somma-rio);
+}
+
+.unit-card__channel-dot[
+    data-channel="evs"
+] {
+    --channel-dot-color:
+        var(--channel-evs);
+}
+
+/* Status: disponível */
+
+.unit-card[data-status="available"] {
+    --unit-card-background:
+        var(--status-available-background);
+
+    --unit-card-text:
+        var(--status-available-text);
+}
+
+/* Status: vendida */
+
+.unit-card[data-status="sold"] {
+    --unit-card-background:
+        var(--status-sold-background);
+
+    --unit-card-text:
+        var(--status-sold-text);
+}
+
+/* Status: em assinatura */
+
+.unit-card[data-status="signing"] {
+    --unit-card-background:
+        var(--status-signing-background);
+
+    --unit-card-text:
+        var(--status-signing-text);
+}
+
+/* Status: contrato em processo */
+
+.unit-card[data-status="contract-process"] {
+    --unit-card-background:
+        var(--status-contract-background);
+
+    --unit-card-text:
+        var(--status-contract-text);
+}
+
+/* Status: aprovada */
+
+.unit-card[data-status="approved"] {
+    --unit-card-background:
+        var(--status-approved-background);
+
+    --unit-card-text:
+        var(--status-approved-text);
+}
+
+/* Status: reservada */
+
+.unit-card[data-status="reserved"] {
+    --unit-card-background:
+        var(--status-reserved-background);
+
+    --unit-card-text:
+        var(--status-reserved-text);
+}
+
+/* Responsividade */
+
+@media (max-width: 1200px) {
+    .unit-grid {
+        grid-template-columns:
+            repeat(4, minmax(110px, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .unit-grid {
+        grid-template-columns:
+            repeat(2, minmax(120px, 1fr));
+    }
+}
+
+@media (max-width: 420px) {
+    .unit-grid {
+        grid-template-columns: 1fr;
+    }
+}

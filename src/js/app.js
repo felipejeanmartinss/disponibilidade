@@ -4,6 +4,8 @@ import {
     SALES_CHANNEL_OPTIONS,
 } from "./config/channels.js";
 
+import { MOCK_UNITS } from "../data/mockUnits.js";
+
 import { AppView } from "./views/AppView.js";
 
 function bootstrap() {
@@ -19,7 +21,8 @@ function bootstrap() {
 
     appView.render(
         APP_CONFIG,
-        SALES_CHANNEL_OPTIONS
+        SALES_CHANNEL_OPTIONS,
+        MOCK_UNITS
     );
 
     console.info(
