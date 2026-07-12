@@ -12,29 +12,93 @@ export class Unit {
     constructor({
         id,
         number,
-        block = "Único",
-        status = UNIT_STATUS.AVAILABLE,
+        displayCode,
+        block = "Bloco Único",
+        blockId = "single-block",
+        type = "standard",
+        layoutType =
+            "single-cell",
+        visualVariant =
+            "default",
+        anchorFloor = 1,
+        anchorColumn = 1,
+        columnSpan = 1,
+        rowSpan = 1,
+        status =
+            UNIT_STATUS.AVAILABLE,
         channel = null,
         partner = "",
         manager = "",
         broker = "",
         notes = "",
     }) {
-        if (number === undefined || number === null) {
+        const normalizedDisplayCode =
+            String(
+                displayCode ??
+                    number ??
+                    ""
+            ).trim();
+
+        if (
+            !normalizedDisplayCode
+        ) {
             throw new Error(
-                "Uma unidade precisa possuir um número."
+                "Uma unidade precisa possuir um código de exibição."
             );
         }
 
-        this.id = String(id ?? number);
-        this.number = Number(number);
-        this.block = String(block).trim();
+        this.id = String(
+            id ??
+                `${blockId}-${normalizedDisplayCode}`
+        );
+
+        this.displayCode =
+            normalizedDisplayCode;
+
+        // Compatibilidade com as Views atuais.
+        this.number =
+            normalizedDisplayCode;
+
+        this.block =
+            String(block).trim();
+
+        this.blockId =
+            String(blockId).trim();
+
+        this.type =
+            String(type).trim();
+
+        this.layoutType =
+            String(
+                layoutType
+            ).trim();
+
+        this.visualVariant =
+            String(
+                visualVariant
+            ).trim();
+
+        this.anchorFloor =
+            Number(anchorFloor);
+
+        this.anchorColumn =
+            Number(anchorColumn);
+
+        this.columnSpan =
+            Number(columnSpan);
+
+        this.rowSpan =
+            Number(rowSpan);
 
         this.status =
-            this.validateStatus(status);
+            this.validateStatus(
+                status
+            );
 
         this.channel =
-            this.validateChannel(channel);
+            this.validateChannel(
+                channel
+            );
 
         this.partner =
             this.normalizePartner(
@@ -42,22 +106,33 @@ export class Unit {
                 this.channel
             );
 
-        this.manager = String(manager).trim();
-        this.broker = String(broker).trim();
-        this.notes = String(notes).trim();
+        this.manager =
+            String(manager).trim();
+
+        this.broker =
+            String(broker).trim();
+
+        this.notes =
+            String(notes).trim();
     }
 
     validateStatus(status) {
-        return getStatusByValue(status).value;
+        return getStatusByValue(
+            status
+        ).value;
     }
 
-    validateChannel(channel) {
+    validateChannel(
+        channel
+    ) {
         if (!channel) {
             return null;
         }
 
         const validChannel =
-            getChannelByValue(channel);
+            getChannelByValue(
+                channel
+            );
 
         return validChannel
             ? validChannel.value
@@ -68,31 +143,42 @@ export class Unit {
         partner,
         channel
     ) {
-        const isPartnershipChannel =
+        const isPartnership =
             channel ===
-            SALES_CHANNEL.TEGRA_PARTNERSHIPS;
+            SALES_CHANNEL
+                .TEGRA_PARTNERSHIPS;
 
-        return isPartnershipChannel
-            ? String(partner).trim()
+        return isPartnership
+            ? String(
+                  partner
+              ).trim()
             : "";
     }
 
     update({
         block = this.block,
         status = this.status,
-        channel = this.channel,
-        partner = this.partner,
-        manager = this.manager,
+        channel =
+            this.channel,
+        partner =
+            this.partner,
+        manager =
+            this.manager,
         broker = this.broker,
         notes = this.notes,
     }) {
         const validatedChannel =
-            this.validateChannel(channel);
+            this.validateChannel(
+                channel
+            );
 
-        this.block = String(block).trim();
+        this.block =
+            String(block).trim();
 
         this.status =
-            this.validateStatus(status);
+            this.validateStatus(
+                status
+            );
 
         this.channel =
             validatedChannel;
@@ -104,10 +190,14 @@ export class Unit {
             );
 
         this.manager =
-            String(manager).trim();
+            String(
+                manager
+            ).trim();
 
         this.broker =
-            String(broker).trim();
+            String(
+                broker
+            ).trim();
 
         this.notes =
             String(notes).trim();
@@ -118,14 +208,57 @@ export class Unit {
     toJSON() {
         return {
             id: this.id,
-            number: this.number,
-            block: this.block,
-            status: this.status,
-            channel: this.channel,
-            partner: this.partner,
-            manager: this.manager,
-            broker: this.broker,
-            notes: this.notes,
+
+            displayCode:
+                this.displayCode,
+
+            number:
+                this.displayCode,
+
+            block:
+                this.block,
+
+            blockId:
+                this.blockId,
+
+            type:
+                this.type,
+
+            layoutType:
+                this.layoutType,
+
+            visualVariant:
+                this.visualVariant,
+
+            anchorFloor:
+                this.anchorFloor,
+
+            anchorColumn:
+                this.anchorColumn,
+
+            columnSpan:
+                this.columnSpan,
+
+            rowSpan:
+                this.rowSpan,
+
+            status:
+                this.status,
+
+            channel:
+                this.channel,
+
+            partner:
+                this.partner,
+
+            manager:
+                this.manager,
+
+            broker:
+                this.broker,
+
+            notes:
+                this.notes,
         };
     }
 }

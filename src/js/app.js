@@ -3,6 +3,11 @@ import {
 } from "./config/constants.js";
 
 import {
+    APP_MODE,
+    APP_MODE_OPTIONS,
+} from "./config/appModes.js";
+
+import {
     SALES_CHANNEL_OPTIONS,
 } from "./config/channels.js";
 
@@ -19,12 +24,24 @@ import {
 } from "./services/LocalStorageService.js";
 
 import {
+    ProjectConfigService,
+} from "./services/ProjectConfigService.js";
+
+import {
     UnitFactory,
 } from "./factories/UnitFactory.js";
 
 import {
     AppView,
 } from "./views/AppView.js";
+
+import {
+    AppModeController,
+} from "./controllers/AppModeController.js";
+
+import {
+    MatrixEditorController,
+} from "./controllers/MatrixEditorController.js";
 
 import {
     UnitController,
@@ -34,7 +51,7 @@ function createUnitsFromStoredData(
     storedUnits
 ) {
     if (!Array.isArray(storedUnits)) {
-        return null;
+        return [];
     }
 
     try {
@@ -44,58 +61,105 @@ function createUnitsFromStoredData(
         );
     } catch (error) {
         console.warn(
-            "Os dados salvos são inválidos e serão ignorados:",
+            "Os dados operacionais salvos são inválidos:",
             error
         );
 
         LocalStorageService.clear();
 
-        return null;
+        return [];
     }
 }
 
-function createDefaultUnits(
+function applyStoredOperationalData(
+    generatedUnits,
+    storedUnits
+) {
+    const storedUnitsById =
+        new Map(
+            storedUnits.map(
+                (unit) => [
+                    unit.id,
+                    unit,
+                ]
+            )
+        );
+
+    generatedUnits.forEach(
+        (generatedUnit) => {
+            const storedUnit =
+                storedUnitsById.get(
+                    generatedUnit.id
+                );
+
+            if (!storedUnit) {
+                return;
+            }
+
+            generatedUnit.update({
+                block:
+                    generatedUnit.block,
+
+                status:
+                    storedUnit.status,
+
+                channel:
+                    storedUnit.channel,
+
+                partner:
+                    storedUnit.partner,
+
+                manager:
+                    storedUnit.manager,
+
+                broker:
+                    storedUnit.broker,
+
+                notes:
+                    storedUnit.notes,
+            });
+        }
+    );
+
+    return generatedUnits;
+}
+
+function createUnitsFromConfiguration(
     projectConfig
 ) {
-    return (
+    const generatedUnits =
         UnitFactory
             .createFromProjectConfig(
                 projectConfig
-            )
-    );
-}
-
-function loadInitialUnits(
-    projectConfig
-) {
-    const storedData =
-        LocalStorageService.load();
+            );
 
     const storedUnits =
         createUnitsFromStoredData(
-            storedData
+            LocalStorageService.load()
         );
 
-    if (storedUnits) {
-        console.info(
-            "Unidades carregadas do armazenamento local."
-        );
-
-        return storedUnits;
-    }
-
-    console.info(
-        "Unidades criadas a partir da configuração padrão."
+    return applyStoredOperationalData(
+        generatedUnits,
+        storedUnits
     );
+}
 
-    return createDefaultUnits(
-        projectConfig
+function replaceUnits(
+    currentUnits,
+    newUnits
+) {
+    currentUnits.splice(
+        0,
+        currentUnits.length,
+        ...newUnits
     );
 }
 
 function bootstrap() {
     const rootElement =
-        document.getElementById("app");
+        document.getElementById(
+            "app"
+        );
 
     if (!rootElement) {
         throw new Error(
@@ -103,27 +167,75 @@ function bootstrap() {
         );
     }
 
-    const projectConfig =
+    const defaultProjectConfig =
         createDefaultProjectConfig();
 
+    const projectConfig =
+        ProjectConfigService.load(
+            defaultProjectConfig
+        );
+
     const units =
-        loadInitialUnits(
+        createUnitsFromConfiguration(
             projectConfig
         );
 
-    const appView =
-        new AppView(rootElement);
-
-    const renderApplication = () => {
-        appView.render(
-            APP_CONFIG,
-            SALES_CHANNEL_OPTIONS,
-            units
-        );
+    const state = {
+        activeMode:
+            APP_MODE.OPERATION,
     };
 
-    const saveAndRenderApplication =
+    const appView =
+        new AppView(
+            rootElement
+        );
+
+    const renderApplication =
         () => {
+            appView.render({
+                config:
+                    APP_CONFIG,
+
+                channels:
+                    SALES_CHANNEL_OPTIONS,
+
+                units,
+
+                modeOptions:
+                    APP_MODE_OPTIONS,
+
+                activeMode:
+                    state.activeMode,
+
+                projectConfig,
+            });
+        };
+
+    const saveUnitsAndRender =
+        () => {
+            LocalStorageService.save(
+                units
+            );
+
+            renderApplication();
+        };
+
+    const saveConfigurationAndRender =
+        () => {
+            ProjectConfigService.save(
+                projectConfig
+            );
+
+            const regeneratedUnits =
+                createUnitsFromConfiguration(
+                    projectConfig
+                );
+
+            replaceUnits(
+                units,
+                regeneratedUnits
+            );
+
             LocalStorageService.save(
                 units
             );
@@ -133,13 +245,42 @@ function bootstrap() {
 
     renderApplication();
 
+    const matrixEditorController =
+        new MatrixEditorController({
+            rootElement,
+            projectConfig,
+
+            onConfigChange:
+                saveConfigurationAndRender,
+        });
+
+    matrixEditorController.init();
+
+    const appModeController =
+        new AppModeController({
+            rootElement,
+
+            onModeChange:
+                (selectedMode) => {
+                    matrixEditorController
+                        .reset();
+
+                    state.activeMode =
+                        selectedMode;
+
+                    renderApplication();
+                },
+        });
+
+    appModeController.init();
+
     const unitController =
         new UnitController({
             rootElement,
             units,
 
             onUnitsChange:
-                saveAndRenderApplication,
+                saveUnitsAndRender,
         });
 
     unitController.init();
@@ -153,7 +294,7 @@ function bootstrap() {
     );
 
     console.info(
-        `Total configurado: ${projectConfig.getTotalUnits()} unidades.`
+        `Unidades geradas: ${units.length}.`
     );
 }
 

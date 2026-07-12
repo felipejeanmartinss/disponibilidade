@@ -1,59 +1,75 @@
-import { UnitCardView } from "./UnitCardView.js";
-import { UnitModalView } from "./UnitModalView.js";
+import {
+    APP_MODE,
+} from "../config/appModes.js";
+
+import {
+    AppNavigationView,
+} from "./AppNavigationView.js";
+
+import {
+    ConfigurationView,
+} from "./ConfigurationView.js";
+
+import {
+    ExecutiveView,
+} from "./ExecutiveView.js";
+
+import {
+    OperationView,
+} from "./OperationView.js";
+
+import {
+    UnitModalView,
+} from "./UnitModalView.js";
 
 export class AppView {
     constructor(rootElement) {
-        if (!(rootElement instanceof HTMLElement)) {
+        if (
+            !(
+                rootElement instanceof
+                HTMLElement
+            )
+        ) {
             throw new Error(
                 "AppView precisa receber um elemento HTML válido."
             );
         }
 
-        this.rootElement = rootElement;
+        this.rootElement =
+            rootElement;
     }
 
-    render(config, channels, units) {
-        const channelLegend = channels
-            .map(
-                (channel) => `
-                    <li class="channel-legend__item">
-                        <span
-                            class="channel-dot"
-                            data-channel="${channel.value}"
-                            aria-hidden="true"
-                        ></span>
+    render({
+        config,
+        channels,
+        units,
+        modeOptions,
+        activeMode,
+        projectConfig,
+    }) {
+        const navigation =
+            AppNavigationView.render(
+                modeOptions,
+                activeMode
+            );
 
-                        <span>${channel.label}</span>
-                    </li>
-                `
-            )
-            .join("");
-
-        const unitCards =
-            UnitCardView.renderList(units);
-
-        const availableUnits = units.filter(
-            (unit) => unit.status === "available"
-        ).length;
-
-        const reservedUnits = units.filter(
-            (unit) => unit.status === "reserved"
-        ).length;
-
-        const soldUnits = units.filter(
-            (unit) => unit.status === "sold"
-        ).length;
-
-        const salesRate = units.length
-            ? Math.round(
-                (soldUnits / units.length) * 100
-            )
-            : 0;
+        const modeContent =
+            this.renderModeContent({
+                activeMode,
+                channels,
+                units,
+                projectConfig,
+            });
 
         this.rootElement.innerHTML = `
             <div class="app-shell">
                 <header class="app-header">
-                    <div class="app-container app-header__content">
+                    <div
+                        class="
+                            app-container
+                            app-header__content
+                        "
+                    >
                         <div class="app-brand">
                             <div
                                 class="app-brand__symbol"
@@ -73,6 +89,8 @@ export class AppView {
                             </div>
                         </div>
 
+                        ${navigation}
+
                         <div class="app-header__context">
                             <div class="project-context">
                                 <span class="project-context__label">
@@ -80,7 +98,7 @@ export class AppView {
                                 </span>
 
                                 <strong class="project-context__name">
-                                    Península Collection
+                                    ${projectConfig.projectName}
                                 </strong>
                             </div>
 
@@ -97,187 +115,21 @@ export class AppView {
 
                 <main class="app-workspace">
                     <div class="app-container">
-                        <section
-                            class="toolbar"
-                            aria-label="Filtros do painel"
-                        >
-                            <div class="toolbar-field">
-                                <label
-                                    class="toolbar-field__label"
-                                    for="project-filter"
-                                >
-                                    Empreendimento
-                                </label>
-
-                                <select
-                                    class="toolbar-field__control"
-                                    id="project-filter"
-                                >
-                                    <option>
-                                        Península Collection
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="toolbar-field">
-                                <label
-                                    class="toolbar-field__label"
-                                    for="block-filter"
-                                >
-                                    Bloco
-                                </label>
-
-                                <select
-                                    class="toolbar-field__control"
-                                    id="block-filter"
-                                >
-                                    <option>Todos</option>
-                                </select>
-                            </div>
-
-                            <div class="toolbar-field">
-                                <label
-                                    class="toolbar-field__label"
-                                    for="floor-filter"
-                                >
-                                    Andar
-                                </label>
-
-                                <select
-                                    class="toolbar-field__control"
-                                    id="floor-filter"
-                                >
-                                    <option>Todos</option>
-                                </select>
-                            </div>
-
-                            <div class="toolbar-field">
-                                <label
-                                    class="toolbar-field__label"
-                                    for="unit-search"
-                                >
-                                    Buscar unidade
-                                </label>
-
-                                <input
-                                    class="toolbar-field__control"
-                                    id="unit-search"
-                                    type="search"
-                                    placeholder="Ex.: 803"
-                                >
-                            </div>
-                        </section>
-
-                        <div class="content-layout">
-                            <section class="workspace-panel">
-                                <header class="workspace-panel__header">
-                                    <div>
-                                        <h2 class="workspace-panel__title">
-                                            Mapa de disponibilidade
-                                        </h2>
-
-                                        <p
-                                            class="
-                                                workspace-panel__description
-                                            "
-                                        >
-                                            Consulte a posição comercial
-                                            das unidades por andar.
-                                        </p>
-                                    </div>
-
-                                    <span class="system-status">
-                                        Atualizado
-                                    </span>
-                                </header>
-
-                                <div
-                                    class="unit-grid"
-                                    aria-label="
-                                        Mapa comercial das unidades
-                                    "
-                                >
-                                    ${unitCards}
-                                </div>
-                            </section>
-
-                            <aside class="insights-panel">
-                                <header class="insights-panel__header">
-                                    <h2 class="insights-panel__title">
-                                        Visão geral
-                                    </h2>
-                                </header>
-
-                                <div class="kpi-list">
-                                    <div class="kpi-item">
-                                        <span class="kpi-item__label">
-                                            Total de unidades
-                                        </span>
-
-                                        <strong class="kpi-item__value">
-                                            ${units.length}
-                                        </strong>
-                                    </div>
-
-                                    <div class="kpi-item">
-                                        <span class="kpi-item__label">
-                                            Disponíveis
-                                        </span>
-
-                                        <strong class="kpi-item__value">
-                                            ${availableUnits}
-                                        </strong>
-                                    </div>
-
-                                    <div class="kpi-item">
-                                        <span class="kpi-item__label">
-                                            Reservadas
-                                        </span>
-
-                                        <strong class="kpi-item__value">
-                                            ${reservedUnits}
-                                        </strong>
-                                    </div>
-
-                                    <div class="kpi-item">
-                                        <span class="kpi-item__label">
-                                            Vendidas
-                                        </span>
-
-                                        <strong class="kpi-item__value">
-                                            ${soldUnits}
-                                        </strong>
-                                    </div>
-
-                                    <div class="kpi-item">
-                                        <span class="kpi-item__label">
-                                            VSO
-                                        </span>
-
-                                        <strong class="kpi-item__value">
-                                            ${salesRate}%
-                                        </strong>
-                                    </div>
-                                </div>
-
-                                <section class="channel-legend">
-                                    <h3 class="channel-legend__title">
-                                        Canais de vendas
-                                    </h3>
-
-                                    <ul class="channel-legend__list">
-                                        ${channelLegend}
-                                    </ul>
-                                </section>
-                            </aside>
-                        </div>
+                        ${modeContent}
                     </div>
                 </main>
 
                 <footer class="app-footer">
-                    <div class="app-container app-footer__content">
+                    <div
+                        class="
+                            app-container
+                            app-footer__content
+                        "
+                    >
                         <p class="app-footer__text">
-                            ${config.name} • Versão ${config.version}
+                            ${config.name}
+                            •
+                            Versão ${config.version}
                         </p>
 
                         <span class="system-status">
@@ -285,8 +137,43 @@ export class AppView {
                         </span>
                     </div>
                 </footer>
+
                 ${UnitModalView.render()}
             </div>
         `;
+    }
+
+    renderModeContent({
+        activeMode,
+        channels,
+        units,
+        projectConfig,
+    }) {
+        switch (activeMode) {
+            case APP_MODE.CONFIGURATION:
+                return (
+                    ConfigurationView.render({
+                        projectConfig,
+                    })
+                );
+
+            case APP_MODE.EXECUTIVE:
+                return (
+                    ExecutiveView.render({
+                        units,
+                        projectConfig,
+                    })
+                );
+
+            case APP_MODE.OPERATION:
+            default:
+                return (
+                    OperationView.render({
+                        channels,
+                        units,
+                        projectConfig,
+                    })
+                );
+        }
     }
 }

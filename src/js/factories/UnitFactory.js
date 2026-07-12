@@ -10,118 +10,221 @@ export class UnitFactory {
     static createFromProjectConfig(
         projectConfig
     ) {
-        if (!projectConfig) {
-            throw new Error(
-                "UnitFactory precisa receber uma configuração de empreendimento."
-            );
-        }
-
         if (
+            !projectConfig ||
             !Array.isArray(
                 projectConfig.blocks
             )
         ) {
             throw new Error(
-                "A configuração precisa possuir uma lista de blocos."
+                "A configuração do empreendimento é inválida."
             );
         }
 
-        const units = [];
+        return projectConfig.blocks
+            .flatMap(
+                (block) =>
+                    UnitFactory
+                        .createBlockUnits(
+                            block
+                        )
+            );
+    }
 
-        projectConfig.blocks.forEach(
-            (block) => {
-                const blockUnits =
-                    UnitFactory.createBlockUnits(
-                        block
+    static createBlockUnits(
+        block
+    ) {
+        const standardUnits =
+            UnitFactory
+                .createStandardUnits(
+                    block
+                );
+
+        const customUnits =
+            UnitFactory
+                .createCustomUnits(
+                    block
+                );
+
+        return [
+            ...standardUnits,
+            ...customUnits,
+        ].sort(
+            (first, second) => {
+                if (
+                    first.anchorFloor !==
+                    second.anchorFloor
+                ) {
+                    return (
+                        second
+                            .anchorFloor -
+                        first
+                            .anchorFloor
                     );
+                }
 
-                units.push(
-                    ...blockUnits
+                return (
+                    first
+                        .anchorColumn -
+                    second
+                        .anchorColumn
                 );
             }
         );
-
-        return units;
     }
 
-    static createBlockUnits(block) {
+    static createStandardUnits(
+        block
+    ) {
         const units = [];
 
+        const customOccupation =
+            block
+                .getCustomOccupationMap();
+
         for (
-            let floor = block.floors;
-            floor >= 1;
+            let floor =
+                block
+                    .typeFloorTemplate
+                    .endFloor;
+            floor >=
+            block
+                .typeFloorTemplate
+                .startFloor;
             floor -= 1
         ) {
-            for (
-                let position = 1;
-                position <=
-                    block.unitsPerFloor;
-                position += 1
-            ) {
-                const unitNumber =
-                    UnitFactory.createUnitNumber(
-                        floor,
-                        position,
-                        block.unitsPerFloor
-                    );
+            block
+                .typeFloorTemplate
+                .units
+                .forEach(
+                    (
+                        templateUnit
+                    ) => {
+                        const column =
+                            templateUnit
+                                .column;
 
-                units.push(
-                    new Unit({
-                        id:
-                            `${block.id}-${unitNumber}`,
+                        const cellKey =
+                            block.getCellKey(
+                                floor,
+                                column
+                            );
 
-                        number:
-                            unitNumber,
+                        const isExcluded =
+                            block.isCellExcluded(
+                                floor,
+                                column
+                            );
 
-                        block:
-                            block.name,
+                        const isReplaced =
+                            customOccupation
+                                .has(cellKey);
 
-                        status:
-                            UNIT_STATUS.AVAILABLE,
+                        if (
+                            isExcluded ||
+                            isReplaced
+                        ) {
+                            return;
+                        }
 
-                        channel:
-                            null,
+                        const displayCode =
+                            `${floor}${templateUnit.displaySuffix}`;
 
-                        partner:
-                            "",
+                        units.push(
+                            new Unit({
+                                id:
+                                    `${block.id}-type-${floor}-${column}`,
 
-                        manager:
-                            "",
+                                displayCode,
 
-                        broker:
-                            "",
+                                block:
+                                    block.name,
 
-                        notes:
-                            "",
-                    })
+                                blockId:
+                                    block.id,
+
+                                type:
+                                    "standard",
+
+                                layoutType:
+                                    "single-cell",
+
+                                visualVariant:
+                                    "default",
+
+                                anchorFloor:
+                                    floor,
+
+                                anchorColumn:
+                                    column,
+
+                                columnSpan:
+                                    1,
+
+                                rowSpan:
+                                    1,
+
+                                status:
+                                    UNIT_STATUS.AVAILABLE,
+                            })
+                        );
+                    }
                 );
-            }
         }
 
         return units;
     }
 
-    static createUnitNumber(
-        floor,
-        position,
-        unitsPerFloor
+    static createCustomUnits(
+        block
     ) {
-        const positionDigits =
-            Math.max(
-                2,
-                String(
-                    unitsPerFloor
-                ).length
-            );
+        return block.customUnits.map(
+            (customUnit) =>
+                new Unit({
+                    id:
+                        customUnit.id,
 
-        const formattedPosition =
-            String(position).padStart(
-                positionDigits,
-                "0"
-            );
+                    displayCode:
+                        customUnit
+                            .displayCode,
 
-        return Number(
-            `${floor}${formattedPosition}`
+                    block:
+                        block.name,
+
+                    blockId:
+                        block.id,
+
+                    type:
+                        customUnit.type,
+
+                    layoutType:
+                        customUnit
+                            .layoutType,
+
+                    visualVariant:
+                        customUnit
+                            .visualVariant,
+
+                    anchorFloor:
+                        customUnit
+                            .anchorFloor,
+
+                    anchorColumn:
+                        customUnit
+                            .anchorColumn,
+
+                    columnSpan:
+                        customUnit
+                            .columnSpan,
+
+                    rowSpan:
+                        customUnit
+                            .rowSpan,
+
+                    status:
+                        UNIT_STATUS
+                            .AVAILABLE,
+                })
         );
     }
 }

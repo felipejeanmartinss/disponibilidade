@@ -8,47 +8,73 @@ import {
 
 export class UnitCardView {
     static render(unit) {
-        const status = getStatusByValue(unit.status);
+        const status =
+            getStatusByValue(
+                unit.status
+            );
 
-        const channel = unit.channel
-            ? getChannelByValue(unit.channel)
-            : null;
+        const channel =
+            unit.channel
+                ? getChannelByValue(
+                      unit.channel
+                  )
+                : null;
 
-        const channelIndicator = channel
-            ? `
-                <span
-                    class="unit-card__channel-dot"
-                    data-channel="${channel.value}"
-                    aria-hidden="true"
-                ></span>
-            `
-            : "";
+        const displayCode =
+            String(
+                unit.displayCode ??
+                    unit.number
+            );
 
-        const channelDescription = channel
-            ? `
-                <span class="unit-card__channel-name">
-                    ${channel.label}
-                </span>
-            `
-            : `
-                <span class="unit-card__channel-name">
-                    Sem canal definido
-                </span>
-            `;
+        const channelIndicator =
+            channel
+                ? `
+                    <span
+                        class="unit-card__channel-dot"
+                        data-channel="${channel.value}"
+                        aria-hidden="true"
+                    ></span>
+                `
+                : "";
 
-        const accessibleChannel = channel
-            ? `Canal ${channel.label}.`
-            : "Sem canal definido.";
+        const channelDescription =
+            channel
+                ? `
+                    <span class="unit-card__channel-name">
+                        ${channel.label}
+                    </span>
+                `
+                : `
+                    <span class="unit-card__channel-name">
+                        Sem canal definido
+                    </span>
+                `;
+
+        const accessibleChannel =
+            channel
+                ? `Canal ${channel.label}.`
+                : "Sem canal definido.";
+
+        const gardenClass =
+            unit.visualVariant ===
+            "garden"
+                ? "unit-card--garden"
+                : "";
 
         return `
             <button
-                class="unit-card"
+                class="
+                    unit-card
+                    ${gardenClass}
+                "
                 type="button"
-                data-unit="${unit.number}"
+                data-unit="${displayCode}"
+                data-unit-id="${unit.id}"
                 data-status="${status.value}"
                 data-channel="${channel?.value ?? ""}"
+                data-visual-variant="${unit.visualVariant ?? "default"}"
                 aria-label="
-                    Unidade ${unit.number}.
+                    Unidade ${displayCode}.
                     Status ${status.label}.
                     ${accessibleChannel}
                 "
@@ -56,7 +82,7 @@ export class UnitCardView {
                 ${channelIndicator}
 
                 <span class="unit-card__number">
-                    ${unit.number}
+                    ${displayCode}
                 </span>
 
                 <span class="unit-card__status">
@@ -70,7 +96,12 @@ export class UnitCardView {
 
     static renderList(units) {
         return units
-            .map((unit) => UnitCardView.render(unit))
+            .map(
+                (unit) =>
+                    UnitCardView.render(
+                        unit
+                    )
+            )
             .join("");
     }
 }

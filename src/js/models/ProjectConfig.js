@@ -1,56 +1,68 @@
-const DEFAULT_STATUS_COLORS = Object.freeze({
-    available: "#DCDCDC",
-    sold: "#0043C8",
-    signing: "#9664C8",
-    "contract-process": "#50AAE1",
-    approved: "#EBB92D",
-    reserved: "#FFFF00",
-});
+import {
+    BlockLayout,
+} from "./BlockLayout.js";
 
-const DEFAULT_CHANNEL_COLORS = Object.freeze({
-    "tegra-sales": "#0057B8",
-    "tegra-partnerships": "#008F68",
-    "lopes-rio": "#D6262F",
-    "somma-rio": "#00205F",
-    evs: "#7C3AED",
-});
-
-const DEFAULT_APPEARANCE = Object.freeze({
-    channelIndicatorSize: 16,
-    showStatusLegend: true,
-    showChannelLegend: true,
-    statusColors: DEFAULT_STATUS_COLORS,
-    channelColors: DEFAULT_CHANNEL_COLORS,
-});
-
-const DEFAULT_BLOCKS = Object.freeze([
+const DEFAULT_STATUS_COLORS =
     Object.freeze({
-        id: "single-block",
-        name: "Bloco Único",
-        floors: 8,
-        unitsPerFloor: 8,
-    }),
-]);
+        available: "#DCDCDC",
+        sold: "#0043C8",
+        signing: "#9664C8",
+        "contract-process":
+            "#50AAE1",
+        approved: "#EBB92D",
+        reserved: "#FFFF00",
+    });
+
+const DEFAULT_CHANNEL_COLORS =
+    Object.freeze({
+        "tegra-sales": "#0057B8",
+        "tegra-partnerships":
+            "#008F68",
+        "lopes-rio": "#D6262F",
+        "somma-rio": "#00205F",
+        evs: "#7C3AED",
+    });
+
+const DEFAULT_APPEARANCE =
+    Object.freeze({
+        channelIndicatorSize: 16,
+        showStatusLegend: true,
+        showChannelLegend: true,
+        gardenBorderColor:
+            "#15803D",
+
+        statusColors:
+            DEFAULT_STATUS_COLORS,
+
+        channelColors:
+            DEFAULT_CHANNEL_COLORS,
+    });
 
 export class ProjectConfig {
     constructor({
         id = "default-project",
-        projectName = "Península Collection",
-        blocks = DEFAULT_BLOCKS,
-        appearance = DEFAULT_APPEARANCE,
+        projectName =
+            "Península Collection",
+        blocks = [],
+        appearance =
+            DEFAULT_APPEARANCE,
     } = {}) {
-        this.id = this.normalizeText(
-            id,
-            "default-project"
-        );
+        this.id =
+            this.normalizeText(
+                id,
+                "default-project"
+            );
 
-        this.projectName = this.normalizeText(
-            projectName,
-            "Empreendimento"
-        );
+        this.projectName =
+            this.normalizeText(
+                projectName,
+                "Empreendimento"
+            );
 
         this.blocks =
-            this.normalizeBlocks(blocks);
+            this.normalizeBlocks(
+                blocks
+            );
 
         this.appearance =
             this.normalizeAppearance(
@@ -62,10 +74,10 @@ export class ProjectConfig {
         value,
         fallback = ""
     ) {
-        const normalizedValue =
+        const normalized =
             String(value ?? "").trim();
 
-        return normalizedValue || fallback;
+        return normalized || fallback;
     }
 
     normalizePositiveInteger(
@@ -74,25 +86,28 @@ export class ProjectConfig {
         minimum = 1,
         maximum = 200
     ) {
-        const numericValue =
+        const number =
             Number(value);
 
         if (
-            !Number.isInteger(numericValue) ||
-            numericValue < minimum ||
-            numericValue > maximum
+            !Number.isInteger(
+                number
+            ) ||
+            number < minimum ||
+            number > maximum
         ) {
             return fallback;
         }
 
-        return numericValue;
+        return number;
     }
 
     normalizeBoolean(
         value,
         fallback
     ) {
-        return typeof value === "boolean"
+        return typeof value ===
+            "boolean"
             ? value
             : fallback;
     }
@@ -106,64 +121,36 @@ export class ProjectConfig {
                 .trim()
                 .toUpperCase();
 
-        const isValidHexColor =
+        const isValid =
             /^#[0-9A-F]{6}$/.test(
                 normalizedColor
             );
 
-        return isValidHexColor
+        return isValid
             ? normalizedColor
             : fallback;
     }
 
-    normalizeBlocks(blocks) {
+    normalizeBlocks(
+        blocks
+    ) {
         if (
             !Array.isArray(blocks) ||
             blocks.length === 0
         ) {
-            return DEFAULT_BLOCKS.map(
-                (block) => ({
-                    ...block,
-                })
-            );
+            return [
+                new BlockLayout(),
+            ];
         }
 
         return blocks.map(
-            (block, index) => {
-                const fallbackId =
-                    `block-${index + 1}`;
-
-                const fallbackName =
-                    `Bloco ${index + 1}`;
-
-                return {
-                    id: this.normalizeText(
-                        block?.id,
-                        fallbackId
-                    ),
-
-                    name: this.normalizeText(
-                        block?.name,
-                        fallbackName
-                    ),
-
-                    floors:
-                        this.normalizePositiveInteger(
-                            block?.floors,
-                            1,
-                            1,
-                            200
-                        ),
-
-                    unitsPerFloor:
-                        this.normalizePositiveInteger(
-                            block?.unitsPerFloor,
-                            1,
-                            1,
-                            100
-                        ),
-                };
-            }
+            (block) =>
+                block instanceof
+                BlockLayout
+                    ? block
+                    : new BlockLayout(
+                          block
+                      )
         );
     }
 
@@ -171,21 +158,23 @@ export class ProjectConfig {
         providedColors,
         defaultColors
     ) {
-        const normalizedColors = {};
+        const colors = {};
 
         Object.entries(
             defaultColors
         ).forEach(
             ([key, defaultColor]) => {
-                normalizedColors[key] =
+                colors[key] =
                     this.normalizeColor(
-                        providedColors?.[key],
+                        providedColors?.[
+                            key
+                        ],
                         defaultColor
                     );
             }
         );
 
-        return normalizedColors;
+        return colors;
     }
 
     normalizeAppearance(
@@ -193,29 +182,36 @@ export class ProjectConfig {
     ) {
         return {
             channelIndicatorSize:
-                this.normalizePositiveInteger(
-                    appearance
-                        ?.channelIndicatorSize,
-                    DEFAULT_APPEARANCE
-                        .channelIndicatorSize,
-                    8,
-                    32
-                ),
+                this
+                    .normalizePositiveInteger(
+                        appearance
+                            ?.channelIndicatorSize,
+                        DEFAULT_APPEARANCE
+                            .channelIndicatorSize,
+                        8,
+                        32
+                    ),
 
             showStatusLegend:
                 this.normalizeBoolean(
                     appearance
                         ?.showStatusLegend,
-                    DEFAULT_APPEARANCE
-                        .showStatusLegend
+                    true
                 ),
 
             showChannelLegend:
                 this.normalizeBoolean(
                     appearance
                         ?.showChannelLegend,
+                    true
+                ),
+
+            gardenBorderColor:
+                this.normalizeColor(
+                    appearance
+                        ?.gardenBorderColor,
                     DEFAULT_APPEARANCE
-                        .showChannelLegend
+                        .gardenBorderColor
                 ),
 
             statusColors:
@@ -236,13 +232,10 @@ export class ProjectConfig {
 
     getTotalUnits() {
         return this.blocks.reduce(
-            (total, block) => {
-                return (
-                    total +
-                    block.floors *
-                        block.unitsPerFloor
-                );
-            },
+            (total, block) =>
+                total +
+                block
+                    .getEstimatedUnitCount(),
             0
         );
     }
@@ -250,10 +243,7 @@ export class ProjectConfig {
     update({
         projectName =
             this.projectName,
-
-        blocks =
-            this.blocks,
-
+        blocks = this.blocks,
         appearance =
             this.appearance,
     } = {}) {
@@ -285,9 +275,8 @@ export class ProjectConfig {
 
             blocks:
                 this.blocks.map(
-                    (block) => ({
-                        ...block,
-                    })
+                    (block) =>
+                        block.toJSON()
                 ),
 
             appearance: {
@@ -302,6 +291,10 @@ export class ProjectConfig {
                 showChannelLegend:
                     this.appearance
                         .showChannelLegend,
+
+                gardenBorderColor:
+                    this.appearance
+                        .gardenBorderColor,
 
                 statusColors: {
                     ...this.appearance

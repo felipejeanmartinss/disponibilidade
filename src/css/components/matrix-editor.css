@@ -1,0 +1,421 @@
+.matrix-editor {
+    overflow: hidden;
+
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+}
+
+.matrix-editor__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+
+    padding: var(--spacing-5);
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.matrix-editor__eyebrow {
+    margin: 0 0 var(--spacing-1);
+
+    color: var(--color-primary-600);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.matrix-editor__title {
+    margin: 0;
+}
+
+.matrix-editor__summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--spacing-2);
+}
+
+.matrix-editor__summary span {
+    padding:
+        var(--spacing-1)
+        var(--spacing-3);
+
+    color: var(--color-gray-600);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+
+    background: var(--color-gray-100);
+    border-radius: var(--radius-pill);
+}
+
+.matrix-editor__toolbar {
+    display: grid;
+    grid-template-columns:
+        auto
+        minmax(0, 1fr)
+        auto;
+    align-items: center;
+    gap: var(--spacing-4);
+
+    padding:
+        var(--spacing-3)
+        var(--spacing-5);
+
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.matrix-editor__toolbar > div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-2);
+
+    color: var(--color-gray-600);
+    font-size: var(--font-size-xs);
+}
+
+.matrix-editor__toolbar strong {
+    color: var(--color-primary-700);
+    font-size: var(--font-size-lg);
+}
+
+.matrix-editor__help {
+    margin: 0;
+
+    color: var(--color-gray-500);
+    font-size: var(--font-size-xs);
+    text-align: center;
+}
+
+.matrix-editor__toolbar-button {
+    min-height: 36px;
+
+    padding:
+        var(--spacing-2)
+        var(--spacing-3);
+
+    color: var(--color-gray-700);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+
+    cursor: pointer;
+}
+
+.matrix-editor__toolbar-button:hover:not(:disabled) {
+    background: var(--color-gray-100);
+}
+
+.matrix-editor__toolbar-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.matrix-editor__viewport {
+    overflow: auto;
+
+    padding: var(--spacing-5);
+
+    background:
+        linear-gradient(
+            180deg,
+            var(--color-gray-25),
+            var(--color-gray-50)
+        );
+}
+
+.matrix-editor__grid {
+    display: grid;
+
+    grid-template-columns:
+        64px
+        repeat(
+            var(--matrix-columns),
+            minmax(92px, 1fr)
+        );
+
+    grid-auto-rows:
+        minmax(82px, auto);
+
+    gap: var(--spacing-2);
+
+    min-width:
+        calc(
+            64px +
+            (
+                var(--matrix-columns) *
+                100px
+            )
+        );
+
+    user-select: none;
+}
+
+.matrix-editor__corner,
+.matrix-editor__column-header,
+.matrix-editor__floor-label {
+    display: grid;
+    place-items: center;
+
+    color: var(--color-gray-600);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+
+    background: var(--color-gray-100);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.matrix-editor__column-header {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+.matrix-editor__floor-label {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+
+    color: var(--color-primary-700);
+}
+
+.matrix-editor__cell {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: var(--spacing-1);
+
+    padding: var(--spacing-3);
+
+    color: var(--color-gray-800);
+    font-family: inherit;
+    text-align: center;
+
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-xs);
+
+    cursor: pointer;
+
+    transition:
+        transform var(--transition-fast),
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background var(--transition-fast);
+}
+
+.matrix-editor__cell:hover {
+    z-index: 1;
+
+    border-color: var(--color-primary-400);
+    box-shadow:
+        0 4px 12px rgb(15 23 42 / 10%);
+
+    transform: translateY(-1px);
+}
+
+.matrix-editor__cell:focus-visible {
+    z-index: 4;
+
+    outline: 3px solid rgb(21 101 192 / 24%);
+    outline-offset: 2px;
+}
+
+.matrix-editor__cell.is-selected {
+    z-index: 2;
+
+    color: var(--color-primary-900);
+
+    background: var(--color-primary-100);
+    border-color: var(--color-primary-600);
+
+    box-shadow:
+        0 0 0 2px rgb(21 101 192 / 20%),
+        0 6px 14px rgb(15 23 42 / 12%);
+}
+
+.matrix-editor__cell strong {
+    font-size: var(--font-size-base);
+}
+
+.matrix-editor__cell span,
+.matrix-editor__cell small {
+    color: inherit;
+    font-size: var(--font-size-xs);
+    opacity: 0.75;
+}
+
+.matrix-editor__cell--standard {
+    background: var(--color-white);
+}
+
+.matrix-editor__cell--garden {
+    background: var(--color-white);
+    border: 3px solid #15803d;
+}
+
+.matrix-editor__cell--garden.is-selected {
+    border-color: var(--color-primary-700);
+
+    box-shadow:
+        inset 0 0 0 3px #15803d,
+        0 0 0 2px rgb(21 101 192 / 20%);
+}
+
+.matrix-editor__cell--custom {
+    color: var(--color-primary-900);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-primary-50),
+            var(--color-primary-100)
+        );
+
+    border-color: #93c5fd;
+}
+
+.matrix-editor__cell--excluded {
+    color: var(--color-gray-400);
+    font-size: var(--font-size-xl);
+
+    background:
+        repeating-linear-gradient(
+            135deg,
+            var(--color-gray-100),
+            var(--color-gray-100) 8px,
+            var(--color-gray-200) 8px,
+            var(--color-gray-200) 16px
+        );
+
+    border-style: dashed;
+}
+
+.matrix-editor__cell--excluded.is-selected {
+    color: var(--color-primary-800);
+    border-style: solid;
+}
+
+.matrix-editor__cell--empty {
+    color: var(--color-gray-400);
+
+    background: transparent;
+    border-style: dashed;
+    box-shadow: none;
+}
+
+.matrix-editor__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+
+    padding:
+        var(--spacing-4)
+        var(--spacing-5);
+
+    background: var(--color-white);
+    border-top: 1px solid var(--color-border);
+}
+
+.matrix-editor__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+
+    color: var(--color-gray-600);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.matrix-editor__legend-sample {
+    width: 20px;
+    height: 20px;
+
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+}
+
+.matrix-editor__legend-sample--garden {
+    border: 3px solid #15803d;
+}
+
+.matrix-editor__legend-sample--custom {
+    background: var(--color-primary-100);
+    border-color: #93c5fd;
+}
+
+.matrix-editor__legend-sample--excluded {
+    background:
+        repeating-linear-gradient(
+            135deg,
+            var(--color-gray-100),
+            var(--color-gray-100) 4px,
+            var(--color-gray-200) 4px,
+            var(--color-gray-200) 8px
+        );
+
+    border-style: dashed;
+}
+
+.matrix-editor__legend-sample--selected {
+    background: var(--color-primary-100);
+    border: 2px solid var(--color-primary-600);
+}
+
+.matrix-editor__empty {
+    padding: var(--spacing-8);
+
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.matrix-editor__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--spacing-2);
+}
+
+.matrix-editor__toolbar-button--danger {
+    color: #b42318;
+    border-color: #f1b4ad;
+}
+
+.matrix-editor__toolbar-button--danger:hover:not(:disabled) {
+    color: #912018;
+    background: #fff1f0;
+    border-color: #e98c82;
+}
+
+@media (max-width: 760px) {
+    .matrix-editor__header {
+        flex-direction: column;
+    }
+
+    .matrix-editor__summary {
+        justify-content: flex-start;
+    }
+
+    .matrix-editor__toolbar {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .matrix-editor__help {
+        text-align: left;
+    }
+}
