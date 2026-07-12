@@ -7,4 +7,6 @@
 @import url("./layout/toolbar.css");
 @import url("./layout/main-content.css");
 
+@import url("./components/form.css");
+@import url("./components/modal.css");
 @import url("./components/unit-card.css");
