@@ -4,12 +4,29 @@ import {
     SALES_CHANNEL_OPTIONS,
 } from "./config/channels.js";
 
-import { MOCK_UNITS } from "../data/mockUnits.js";
+import {
+    MOCK_UNITS,
+} from "../data/mockUnits.js";
 
-import { AppView } from "./views/AppView.js";
+import {
+    AppView,
+} from "./views/AppView.js";
+
+import {
+    UnitController,
+} from "./controllers/UnitController.js";
+
+function createEditableUnits() {
+    return MOCK_UNITS.map(
+        (unit) => ({
+            ...unit,
+        })
+    );
+}
 
 function bootstrap() {
-    const rootElement = document.getElementById("app");
+    const rootElement =
+        document.getElementById("app");
 
     if (!rootElement) {
         throw new Error(
@@ -17,13 +34,31 @@ function bootstrap() {
         );
     }
 
-    const appView = new AppView(rootElement);
+    const units = createEditableUnits();
 
-    appView.render(
-        APP_CONFIG,
-        SALES_CHANNEL_OPTIONS,
-        MOCK_UNITS
-    );
+    const appView =
+        new AppView(rootElement);
+
+    const renderApplication = () => {
+        appView.render(
+            APP_CONFIG,
+            SALES_CHANNEL_OPTIONS,
+            units
+        );
+    };
+
+    renderApplication();
+
+    const unitController =
+        new UnitController({
+            rootElement,
+            units,
+
+            onUnitsChange:
+                renderApplication,
+        });
+
+    unitController.init();
 
     console.info(
         `${APP_CONFIG.name} v${APP_CONFIG.version} iniciado com sucesso.`
@@ -40,10 +75,13 @@ try {
 
     document.body.innerHTML = `
         <main>
-            <h1>Não foi possível iniciar o sistema.</h1>
+            <h1>
+                Não foi possível iniciar o sistema.
+            </h1>
 
             <p>
-                Abra o console do navegador para consultar os detalhes.
+                Abra o console do navegador
+                para consultar os detalhes.
             </p>
         </main>
     `;

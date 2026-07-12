@@ -1,4 +1,5 @@
 import { UnitCardView } from "./UnitCardView.js";
+import { UnitModalView } from "./UnitModalView.js";
 
 export class AppView {
     constructor(rootElement) {
@@ -284,6 +285,7 @@ export class AppView {
                         </span>
                     </div>
                 </footer>
+                ${UnitModalView.render()}
             </div>
         `;
     }
