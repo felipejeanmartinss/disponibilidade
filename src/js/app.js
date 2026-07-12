@@ -7,8 +7,8 @@ import {
 } from "./config/channels.js";
 
 import {
-    createMockUnits,
-} from "../data/mockUnits.js";
+    createDefaultProjectConfig,
+} from "../data/defaultProject.js";
 
 import {
     Unit,
@@ -17,6 +17,10 @@ import {
 import {
     LocalStorageService,
 } from "./services/LocalStorageService.js";
+
+import {
+    UnitFactory,
+} from "./factories/UnitFactory.js";
 
 import {
     AppView,
@@ -50,7 +54,20 @@ function createUnitsFromStoredData(
     }
 }
 
-function loadInitialUnits() {
+function createDefaultUnits(
+    projectConfig
+) {
+    return (
+        UnitFactory
+            .createFromProjectConfig(
+                projectConfig
+            )
+    );
+}
+
+function loadInitialUnits(
+    projectConfig
+) {
     const storedData =
         LocalStorageService.load();
 
@@ -68,10 +85,12 @@ function loadInitialUnits() {
     }
 
     console.info(
-        "Dados simulados carregados."
+        "Unidades criadas a partir da configuração padrão."
     );
 
-    return createMockUnits();
+    return createDefaultUnits(
+        projectConfig
+    );
 }
 
 function bootstrap() {
@@ -84,8 +103,13 @@ function bootstrap() {
         );
     }
 
+    const projectConfig =
+        createDefaultProjectConfig();
+
     const units =
-        loadInitialUnits();
+        loadInitialUnits(
+            projectConfig
+        );
 
     const appView =
         new AppView(rootElement);
@@ -122,6 +146,14 @@ function bootstrap() {
 
     console.info(
         `${APP_CONFIG.name} v${APP_CONFIG.version} iniciado com sucesso.`
+    );
+
+    console.info(
+        `Empreendimento: ${projectConfig.projectName}.`
+    );
+
+    console.info(
+        `Total configurado: ${projectConfig.getTotalUnits()} unidades.`
     );
 }
 
