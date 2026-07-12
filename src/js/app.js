@@ -1,11 +1,13 @@
-import { APP_CONFIG } from "./config/constants.js";
+import {
+    APP_CONFIG,
+} from "./config/constants.js";
 
 import {
     SALES_CHANNEL_OPTIONS,
 } from "./config/channels.js";
 
 import {
-    MOCK_UNITS,
+    createMockUnits,
 } from "../data/mockUnits.js";
 
 import {
@@ -26,7 +28,8 @@ function bootstrap() {
         );
     }
 
-    const units = MOCK_UNITS;
+    const units =
+        createMockUnits();
 
     const appView =
         new AppView(rootElement);
@@ -45,7 +48,8 @@ function bootstrap() {
         new UnitController({
             rootElement,
             units,
-            onUnitsChange: renderApplication,
+            onUnitsChange:
+                renderApplication,
         });
 
     unitController.init();
