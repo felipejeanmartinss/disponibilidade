@@ -11,12 +11,68 @@ import {
 } from "../data/mockUnits.js";
 
 import {
+    Unit,
+} from "./models/Unit.js";
+
+import {
+    LocalStorageService,
+} from "./services/LocalStorageService.js";
+
+import {
     AppView,
 } from "./views/AppView.js";
 
 import {
     UnitController,
 } from "./controllers/UnitController.js";
+
+function createUnitsFromStoredData(
+    storedUnits
+) {
+    if (!Array.isArray(storedUnits)) {
+        return null;
+    }
+
+    try {
+        return storedUnits.map(
+            (unitData) =>
+                new Unit(unitData)
+        );
+    } catch (error) {
+        console.warn(
+            "Os dados salvos são inválidos e serão ignorados:",
+            error
+        );
+
+        LocalStorageService.clear();
+
+        return null;
+    }
+}
+
+function loadInitialUnits() {
+    const storedData =
+        LocalStorageService.load();
+
+    const storedUnits =
+        createUnitsFromStoredData(
+            storedData
+        );
+
+    if (storedUnits) {
+        console.info(
+            "Unidades carregadas do armazenamento local."
+        );
+
+        return storedUnits;
+    }
+
+    console.info(
+        "Dados simulados carregados."
+    );
+
+    return createMockUnits();
+}
 
 function bootstrap() {
     const rootElement =
@@ -29,7 +85,7 @@ function bootstrap() {
     }
 
     const units =
-        createMockUnits();
+        loadInitialUnits();
 
     const appView =
         new AppView(rootElement);
@@ -42,14 +98,24 @@ function bootstrap() {
         );
     };
 
+    const saveAndRenderApplication =
+        () => {
+            LocalStorageService.save(
+                units
+            );
+
+            renderApplication();
+        };
+
     renderApplication();
 
     const unitController =
         new UnitController({
             rootElement,
             units,
+
             onUnitsChange:
-                renderApplication,
+                saveAndRenderApplication,
         });
 
     unitController.init();
