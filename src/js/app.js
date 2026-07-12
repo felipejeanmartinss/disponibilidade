@@ -16,14 +16,6 @@ import {
     UnitController,
 } from "./controllers/UnitController.js";
 
-function createEditableUnits() {
-    return MOCK_UNITS.map(
-        (unit) => ({
-            ...unit,
-        })
-    );
-}
-
 function bootstrap() {
     const rootElement =
         document.getElementById("app");
@@ -34,7 +26,7 @@ function bootstrap() {
         );
     }
 
-    const units = createEditableUnits();
+    const units = MOCK_UNITS;
 
     const appView =
         new AppView(rootElement);
@@ -53,9 +45,7 @@ function bootstrap() {
         new UnitController({
             rootElement,
             units,
-
-            onUnitsChange:
-                renderApplication,
+            onUnitsChange: renderApplication,
         });
 
     unitController.init();

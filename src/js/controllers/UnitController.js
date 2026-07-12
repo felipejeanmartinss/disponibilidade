@@ -1,8 +1,4 @@
 import {
-    SALES_CHANNEL,
-} from "../config/channels.js";
-
-import {
     UnitModalView,
 } from "../views/UnitModalView.js";
 
@@ -33,6 +29,7 @@ export class UnitController {
         this.rootElement = rootElement;
         this.units = units;
         this.onUnitsChange = onUnitsChange;
+        this.lastActiveCard = null;
 
         this.handleClick =
             this.handleClick.bind(this);
@@ -74,23 +71,38 @@ export class UnitController {
             event.target.closest(".unit-card");
 
         if (unitCard) {
-            this.openUnit(unitCard.dataset.unit);
+            this.lastActiveCard = unitCard;
+
+            this.openUnit(
+                unitCard.dataset.unit
+            );
+
             return;
         }
 
         const closeButton =
-            event.target.closest("[data-modal-close]");
+            event.target.closest(
+                "[data-modal-close]"
+            );
 
-        const modalBackground =
-            event.target.matches("#unit-modal");
+        const clickedModalBackground =
+            event.target.matches(
+                "#unit-modal"
+            );
 
-        if (closeButton || modalBackground) {
-            UnitModalView.close(this.rootElement);
+        if (
+            closeButton ||
+            clickedModalBackground
+        ) {
+            this.closeModal();
         }
     }
 
     handleChange(event) {
-        if (event.target.id !== "unit-channel") {
+        if (
+            event.target.id !==
+            "unit-channel"
+        ) {
             return;
         }
 
@@ -101,7 +113,10 @@ export class UnitController {
     }
 
     handleSubmit(event) {
-        if (event.target.id !== "unit-form") {
+        if (
+            event.target.id !==
+            "unit-form"
+        ) {
             return;
         }
 
@@ -112,8 +127,43 @@ export class UnitController {
                 this.rootElement
             );
 
+        const unit = this.findUnitById(
+            formData.unitId
+        );
+
+        unit.update({
+            block: formData.block,
+            status: formData.status,
+            channel: formData.channel,
+            partner: formData.partner,
+            manager: formData.manager,
+            broker: formData.broker,
+            notes: formData.notes,
+        });
+
+        this.closeModal();
+
+        this.onUnitsChange(
+            this.units
+        );
+
+        this.restoreCardFocus(
+            unit.number
+        );
+    }
+
+    handleKeydown(event) {
+        if (event.key !== "Escape") {
+            return;
+        }
+
+        this.closeModal();
+    }
+
+    findUnitById(unitId) {
         const unit = this.units.find(
-            (item) => item.id === formData.unitId
+            (item) =>
+                item.id === String(unitId)
         );
 
         if (!unit) {
@@ -122,34 +172,10 @@ export class UnitController {
             );
         }
 
-        unit.block = formData.block;
-        unit.status = formData.status;
-        unit.channel = formData.channel;
-
-        unit.partner =
-            formData.channel ===
-            SALES_CHANNEL.TEGRA_PARTNERSHIPS
-                ? formData.partner
-                : "";
-
-        unit.manager = formData.manager;
-        unit.broker = formData.broker;
-        unit.notes = formData.notes;
-
-        UnitModalView.close(this.rootElement);
-
-        this.onUnitsChange(this.units);
+        return unit;
     }
 
-    handleKeydown(event) {
-        if (event.key !== "Escape") {
-            return;
-        }
-
-        UnitModalView.close(this.rootElement);
-    }
-
-    openUnit(unitNumber) {
+    findUnitByNumber(unitNumber) {
         const unit = this.units.find(
             (item) =>
                 String(item.number) ===
@@ -162,9 +188,43 @@ export class UnitController {
             );
         }
 
+        return unit;
+    }
+
+    openUnit(unitNumber) {
+        const unit =
+            this.findUnitByNumber(
+                unitNumber
+            );
+
         UnitModalView.open(
             this.rootElement,
             unit
         );
+    }
+
+    closeModal() {
+        UnitModalView.close(
+            this.rootElement
+        );
+    }
+
+    restoreCardFocus(unitNumber) {
+        requestAnimationFrame(() => {
+            const updatedCard =
+                this.rootElement.querySelector(
+                    `.unit-card[data-unit="${unitNumber}"]`
+                );
+
+            if (updatedCard) {
+                updatedCard.focus();
+                this.lastActiveCard =
+                    updatedCard;
+
+                return;
+            }
+
+            this.lastActiveCard?.focus();
+        });
     }
 }
