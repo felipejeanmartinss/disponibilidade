@@ -18,6 +18,11 @@
 - logos locais dos canais;
 - filtros por empreendimento, bloco, pavimento, status e busca;
 - importação CSV/XLSX com prévia, validação e relatório de erros.
+- filtros por bloco, pavimento, status, canal e unidade;
+- tela cheia e zoom do mapa;
+- timer dos status comerciais com limite de cinco horas;
+- tooltip dos cards com status, canal e gerente;
+- editor RGB das cores de status e canais.
 
 ## Fase 3 — Configurador de produto
 
@@ -26,6 +31,8 @@
 - gardens e coberturas;
 - junções horizontais, verticais e retangulares;
 - confirmação e histórico para mudanças destrutivas na matriz.
+- tipos: unidade tipo, garden, cobertura linear e cobertura dúplex;
+- unificações horizontais e verticais.
 
 ## Fase 4 — Firebase e segurança
 
@@ -40,6 +47,9 @@
 
 - Visão Executiva com KPIs;
 - dashboard por empreendimento, bloco, canal e período;
+- resumo e gráfico de composição por status;
+- ranking de canais e top 10 gerentes;
+- composição de propostas com filtro por canal;
 - relatórios CSV/Excel/PDF;
 - integração com Power BI;
 - testes automatizados e monitoramento.

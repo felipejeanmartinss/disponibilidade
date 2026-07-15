@@ -107,9 +107,12 @@ export class OperationMatrixView {
             <div class="operation-matrix__viewport">
                 <div
                     class="operation-matrix"
+                    data-operation-columns="${block.columns}"
                     style="
                         --operation-matrix-columns:
                         ${block.columns};
+                        --operation-min-width:
+                        ${56 + block.columns * 144}px;
                     "
                 >
                     ${matrixContent.join("")}
@@ -191,6 +194,12 @@ export class OperationMatrixView {
         return `
             <div
                 class="operation-matrix__unit"
+                data-operation-unit
+                data-block="${unit.blockId}"
+                data-floor="${unit.anchorFloor}"
+                data-code="${unit.displayCode}"
+                data-status="${unit.status}"
+                data-channel="${unit.channel ?? ""}"
                 style="
                     grid-column:
                         span ${unit.columnSpan};

@@ -26,6 +26,7 @@ export class Unit {
         rowSpan = 1,
         status =
             UNIT_STATUS.AVAILABLE,
+        statusChangedAt = null,
         channel = null,
         partner = "",
         superintendent = "",
@@ -100,6 +101,9 @@ export class Unit {
             this.validateStatus(
                 status
             );
+
+        this.statusChangedAt =
+            this.normalizeTimestamp(statusChangedAt);
 
         this.channel =
             this.validateChannel(
@@ -184,6 +188,12 @@ export class Unit {
             : "";
     }
 
+    normalizeTimestamp(value) {
+        if (!value) return null;
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? null : date.toISOString();
+    }
+
     normalizePartnerField(value, channel) {
         return channel === SALES_CHANNEL.TEGRA_PARCERIAS
             ? String(value ?? "").trim()
@@ -255,10 +265,12 @@ export class Unit {
         this.block =
             String(block).trim();
 
-        this.status =
-            this.validateStatus(
-                status
-            );
+        const nextStatus = this.validateStatus(status);
+        const statusHasChanged = nextStatus !== this.status;
+        this.status = nextStatus;
+        this.statusChangedAt = statusHasChanged
+            ? new Date().toISOString()
+            : this.statusChangedAt;
 
         this.channel =
             validatedChannel;
@@ -343,6 +355,9 @@ export class Unit {
 
             status:
                 this.status,
+
+            statusChangedAt:
+                this.statusChangedAt,
 
             channel:
                 this.channel,

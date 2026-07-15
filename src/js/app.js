@@ -47,6 +47,10 @@ import {
     UnitController,
 } from "./controllers/UnitController.js";
 
+import {
+    OperationController,
+} from "./controllers/OperationController.js";
+
 function createUnitsFromStoredData(
     storedUnits
 ) {
@@ -136,6 +140,9 @@ function applyStoredOperationalData(
                 notes:
                     storedUnit.notes,
             });
+
+            generatedUnit.statusChangedAt =
+                storedUnit.statusChangedAt;
         }
     );
 
@@ -208,6 +215,8 @@ function bootstrap() {
             rootElement
         );
 
+    let operationController = null;
+
     const renderApplication =
         () => {
             appView.render({
@@ -227,6 +236,8 @@ function bootstrap() {
 
                 projectConfig,
             });
+
+            operationController?.restoreState();
         };
 
     const saveUnitsAndRender =
@@ -302,6 +313,13 @@ function bootstrap() {
         });
 
     unitController.init();
+
+    operationController =
+        new OperationController({
+            rootElement,
+        });
+
+    operationController.init();
 
     console.info(
         `${APP_CONFIG.name} v${APP_CONFIG.version} iniciado com sucesso.`
