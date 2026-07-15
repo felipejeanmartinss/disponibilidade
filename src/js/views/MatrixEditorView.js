@@ -1,3 +1,7 @@
+import {
+    UNIT_TYPE_OPTIONS,
+} from "../config/unitTypes.js";
+
 export class MatrixEditorView {
     static render(block) {
         if (!block) {
@@ -161,7 +165,66 @@ export class MatrixEditorView {
         ou Shift para selecionar uma área.
     </p>
 
+    <div class="matrix-editor__type-control">
+        <label for="matrix-unit-type">
+            Tipo da unidade
+        </label>
+
+        <select
+            id="matrix-unit-type"
+            data-matrix-unit-type
+        >
+            ${UNIT_TYPE_OPTIONS.map(
+                (option) => `
+                    <option value="${option.value}">
+                        ${option.label}
+                    </option>
+                `
+            ).join("")}
+        </select>
+
+        <button
+            class="matrix-editor__toolbar-button"
+            type="button"
+            data-matrix-action="apply-unit-type"
+            data-matrix-requires-selection
+            disabled
+        >
+            Aplicar tipo
+        </button>
+    </div>
+
     <div class="matrix-editor__actions">
+        <button
+            class="matrix-editor__toolbar-button"
+            type="button"
+            data-matrix-action="merge-horizontal"
+            data-matrix-requires-selection
+            disabled
+        >
+            Unificar horizontal
+        </button>
+
+        <button
+            class="matrix-editor__toolbar-button"
+            type="button"
+            data-matrix-action="merge-vertical"
+            data-matrix-requires-selection
+            disabled
+        >
+            Unificar vertical
+        </button>
+
+        <button
+            class="matrix-editor__toolbar-button"
+            type="button"
+            data-matrix-action="unmerge-unit"
+            data-matrix-requires-selection
+            disabled
+        >
+            Desfazer unificação
+        </button>
+
         <button
             class="
                 matrix-editor__toolbar-button
@@ -226,6 +289,16 @@ export class MatrixEditorView {
                     ${MatrixEditorView.renderLegendItem(
                         "garden",
                         "Garden"
+                    )}
+
+                    ${MatrixEditorView.renderLegendItem(
+                        "coverage-linear",
+                        "Cobertura linear"
+                    )}
+
+                    ${MatrixEditorView.renderLegendItem(
+                        "coverage-duplex",
+                        "Cobertura dúplex"
                     )}
 
                     ${MatrixEditorView.renderLegendItem(
@@ -373,10 +446,9 @@ export class MatrixEditorView {
 
     static renderCustomUnit(unit) {
         const customClass =
-            unit.visualVariant ===
-            "garden"
-                ? "matrix-editor__cell--garden"
-                : "matrix-editor__cell--custom";
+            MatrixEditorView.getCustomUnitClass(
+                unit
+            );
 
         return `
             <button
@@ -482,11 +554,12 @@ export class MatrixEditorView {
             return "Garden";
         }
 
-        if (
-            unit.type ===
-            "coverage"
-        ) {
-            return "Cobertura";
+        if (unit.type === "coverage-linear") {
+            return "Cobertura linear";
+        }
+
+        if (unit.type === "coverage-duplex") {
+            return "Cobertura dúplex";
         }
 
         if (
@@ -511,5 +584,21 @@ export class MatrixEditorView {
         }
 
         return "Personalizada";
+    }
+
+    static getCustomUnitClass(unit) {
+        if (unit.visualVariant === "garden") {
+            return "matrix-editor__cell--garden";
+        }
+
+        if (unit.visualVariant === "coverage-linear") {
+            return "matrix-editor__cell--coverage-linear";
+        }
+
+        if (unit.visualVariant === "coverage-duplex") {
+            return "matrix-editor__cell--coverage-duplex";
+        }
+
+        return "matrix-editor__cell--custom";
     }
 }

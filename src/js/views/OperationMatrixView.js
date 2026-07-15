@@ -177,7 +177,9 @@ export class OperationMatrixView {
                             occupiedCells.add(
                                 OperationMatrixView.getCellKey(
                                     unit.anchorFloor +
-                                        floorOffset,
+                                        (unit.rowSpan > 1
+                                            ? -floorOffset
+                                            : floorOffset),
                                     unit.anchorColumn +
                                         columnOffset
                                 )

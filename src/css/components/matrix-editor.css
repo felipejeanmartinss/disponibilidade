@@ -56,8 +56,8 @@
     display: grid;
     grid-template-columns:
         auto
-        minmax(0, 1fr)
-        auto;
+        minmax(220px, 1fr)
+        minmax(280px, auto);
     align-items: center;
     gap: var(--spacing-4);
 
@@ -81,6 +81,28 @@
 .matrix-editor__toolbar strong {
     color: var(--color-primary-700);
     font-size: var(--font-size-lg);
+}
+
+.matrix-editor__type-control {
+    display: grid !important;
+    grid-template-columns: auto minmax(150px, 1fr) auto;
+    align-items: center !important;
+    gap: var(--spacing-2) !important;
+}
+
+.matrix-editor__type-control label {
+    color: var(--color-gray-700);
+    font-weight: var(--font-weight-semibold);
+}
+
+.matrix-editor__type-control select {
+    min-height: 36px;
+    padding: var(--spacing-2) var(--spacing-3);
+    color: var(--color-gray-800);
+    font: inherit;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
 }
 
 .matrix-editor__help {
@@ -288,6 +310,18 @@
     border-color: #93c5fd;
 }
 
+.matrix-editor__cell--coverage-linear {
+    color: #713f12;
+    background: #fef3c7;
+    border: 3px solid #d97706;
+}
+
+.matrix-editor__cell--coverage-duplex {
+    color: #4c1d95;
+    background: #ede9fe;
+    border: 3px double #7c3aed;
+}
+
 .matrix-editor__cell--excluded {
     color: var(--color-gray-400);
     font-size: var(--font-size-xl);
@@ -353,6 +387,16 @@
     border: 3px solid #15803d;
 }
 
+.matrix-editor__legend-sample--coverage-linear {
+    background: #fef3c7;
+    border: 3px solid #d97706;
+}
+
+.matrix-editor__legend-sample--coverage-duplex {
+    background: #ede9fe;
+    border: 3px double #7c3aed;
+}
+
 .matrix-editor__legend-sample--custom {
     background: var(--color-primary-100);
     border-color: #93c5fd;
@@ -384,6 +428,8 @@
 }
 
 .matrix-editor__actions {
+    grid-column: 1 / -1;
+
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -417,6 +463,10 @@
 
     .matrix-editor__help {
         text-align: left;
+    }
+
+    .matrix-editor__type-control {
+        grid-template-columns: 1fr !important;
     }
 }
 .project-structure {

@@ -41,7 +41,7 @@ export class UnitCardView {
             : "";
 
         return `
-            <button class="unit-card ${unit.visualVariant === "garden" ? "unit-card--garden" : ""}"
+            <button class="unit-card ${UnitCardView.getVariantClass(unit.visualVariant)}"
                 type="button" data-unit="${displayCode}" data-unit-id="${unit.id}"
                 data-status="${status.value}" data-channel="${channel?.value ?? ""}"
                 data-manager="${UnitCardView.escape(unit.manager)}"
@@ -68,6 +68,16 @@ export class UnitCardView {
             .replaceAll(">", "&gt;")
             .replaceAll('"', "&quot;")
             .replaceAll("'", "&#039;");
+    }
+
+    static getVariantClass(variant) {
+        const classes = {
+            garden: "unit-card--garden",
+            "coverage-linear": "unit-card--coverage-linear",
+            "coverage-duplex": "unit-card--coverage-duplex",
+        };
+
+        return classes[variant] ?? "";
     }
 
     static getTimerValue(unit) {

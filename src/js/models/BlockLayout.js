@@ -1,6 +1,8 @@
 const UNIT_TYPES = Object.freeze([
     "standard",
     "garden",
+    "coverage-linear",
+    "coverage-duplex",
     "coverage",
 ]);
 
@@ -249,11 +251,16 @@ export class BlockLayout {
 
         return units.map(
             (unit, index) => {
+                const legacyType =
+                    unit?.type === "coverage"
+                        ? "coverage-linear"
+                        : unit?.type;
+
                 const type =
                     UNIT_TYPES.includes(
-                        unit?.type
+                        legacyType
                     )
-                        ? unit.type
+                        ? legacyType
                         : "standard";
 
                 const columnSpan =
@@ -305,7 +312,11 @@ export class BlockLayout {
                                 ?.visualVariant,
                             type === "garden"
                                 ? "garden"
-                                : "default"
+                                : type === "coverage-duplex"
+                                    ? "coverage-duplex"
+                                    : type === "coverage-linear"
+                                        ? "coverage-linear"
+                                        : "default"
                         ),
 
                     anchorFloor:
@@ -413,7 +424,9 @@ export class BlockLayout {
                 cells.push({
                     floor:
                         unit.anchorFloor +
-                        floorOffset,
+                        (unit.rowSpan > 1
+                            ? -floorOffset
+                            : floorOffset),
 
                     column:
                         unit.anchorColumn +

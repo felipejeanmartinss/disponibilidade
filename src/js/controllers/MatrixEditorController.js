@@ -180,6 +180,26 @@ export class MatrixEditorController {
                 this.restoreSelectedCells();
                 break;
 
+            case "merge-horizontal":
+                this.mergeSelectedCells(
+                    "horizontal"
+                );
+                break;
+
+            case "merge-vertical":
+                this.mergeSelectedCells(
+                    "vertical"
+                );
+                break;
+
+            case "unmerge-unit":
+                this.unmergeSelectedUnit();
+                break;
+
+            case "apply-unit-type":
+                this.applySelectedUnitType();
+                break;
+
             default:
                 break;
         }
@@ -212,6 +232,80 @@ export class MatrixEditorController {
             this.showError(
                 error.message
             );
+        }
+    }
+
+    mergeSelectedCells(direction) {
+        const directionLabel =
+            direction === "horizontal"
+                ? "horizontal"
+                : "vertical";
+
+        const confirmed = window.confirm(
+            `Unificar as células na direção ${directionLabel}? Os dados comerciais da célula âncora serão preservados; dados das demais unidades deixarão de fazer parte da unidade resultante.`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            MatrixLayoutService.mergeCells(
+                this.getActiveBlock(),
+                this.getSelectedCells(),
+                direction
+            );
+
+            this.finishMatrixChange();
+        } catch (error) {
+            this.showError(error.message);
+        }
+    }
+
+    unmergeSelectedUnit() {
+        const confirmed = window.confirm(
+            "Desfazer a unificação selecionada? As células voltarão a ser unidades independentes."
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            MatrixLayoutService.unmergeUnit(
+                this.getActiveBlock(),
+                this.getSelectedCells()
+            );
+
+            this.finishMatrixChange();
+        } catch (error) {
+            this.showError(error.message);
+        }
+    }
+
+    applySelectedUnitType() {
+        const typeControl =
+            this.rootElement.querySelector(
+                "[data-matrix-unit-type]"
+            );
+
+        if (!typeControl) {
+            this.showError(
+                "O seletor de tipo da unidade não foi encontrado."
+            );
+            return;
+        }
+
+        try {
+            MatrixLayoutService.applyUnitType(
+                this.getActiveBlock(),
+                this.getSelectedCells(),
+                typeControl.value
+            );
+
+            this.finishMatrixChange();
+        } catch (error) {
+            this.showError(error.message);
         }
     }
 
@@ -276,7 +370,9 @@ export class MatrixEditorController {
                 cells.push({
                     floor:
                         anchorFloor +
-                        floorOffset,
+                        (rowSpan > 1
+                            ? -floorOffset
+                            : floorOffset),
 
                     column:
                         anchorColumn +
