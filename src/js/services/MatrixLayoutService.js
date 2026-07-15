@@ -44,13 +44,13 @@ export class MatrixLayoutService {
         const displayCode =
             MatrixLayoutService.getStandardDisplayCode(
                 block,
-                geometry.anchorFloor,
-                geometry.anchorColumn
+                geometry.sourceFloor,
+                geometry.sourceColumn
             );
 
         block.customUnits.push({
             id:
-                `${block.id}-type-${geometry.anchorFloor}-${geometry.anchorColumn}`,
+                `${block.id}-type-${geometry.sourceFloor}-${geometry.sourceColumn}`,
             displayCode,
             type: UNIT_TYPE.STANDARD,
             layoutType:
@@ -62,6 +62,107 @@ export class MatrixLayoutService {
             anchorColumn: geometry.anchorColumn,
             columnSpan: geometry.columnSpan,
             rowSpan: geometry.rowSpan,
+        });
+
+        block.validateLayout();
+        return block;
+    }
+
+    static renameUnit(
+        block,
+        selectedCells,
+        requestedDisplayCode
+    ) {
+        MatrixLayoutService.validateBlock(block);
+
+        const cells =
+            MatrixLayoutService.normalizeCells(
+                selectedCells
+            );
+        const displayCode = String(
+            requestedDisplayCode ?? ""
+        ).trim();
+
+        if (cells.length === 0) {
+            throw new Error(
+                "Selecione uma unidade para alterar o número."
+            );
+        }
+
+        if (!/^[A-Za-z0-9._/-]{1,20}$/.test(displayCode)) {
+            throw new Error(
+                "Informe um número de unidade com até 20 caracteres, usando letras, números, ponto, hífen, barra ou sublinhado."
+            );
+        }
+
+        const selectedCustomUnits =
+            MatrixLayoutService.getSelectedCustomUnits(
+                block,
+                cells
+            );
+
+        if (selectedCustomUnits.length > 1) {
+            throw new Error(
+                "Selecione somente uma unidade para alterar o número."
+            );
+        }
+
+        if (selectedCustomUnits.length === 1) {
+            const unit = selectedCustomUnits[0];
+
+            MatrixLayoutService.ensureSelectionMatchesUnit(
+                block,
+                cells,
+                unit
+            );
+            MatrixLayoutService.ensureDisplayCodeIsUnique(
+                block,
+                displayCode,
+                unit.id
+            );
+
+            unit.displayCode = displayCode;
+            block.validateLayout();
+            return block;
+        }
+
+        if (cells.length !== 1) {
+            throw new Error(
+                "Selecione somente uma unidade para alterar o número."
+            );
+        }
+
+        MatrixLayoutService.ensureCellsAreInsideMatrix(
+            block,
+            cells
+        );
+        MatrixLayoutService.ensureCellsAreAvailable(
+            block,
+            cells
+        );
+
+        const [cell] = cells;
+        MatrixLayoutService.ensureDisplayCodeIsUnique(
+            block,
+            displayCode,
+            null,
+            block.getCellKey(
+                cell.floor,
+                cell.column
+            )
+        );
+
+        block.customUnits.push({
+            id:
+                `${block.id}-type-${cell.floor}-${cell.column}`,
+            displayCode,
+            type: UNIT_TYPE.STANDARD,
+            layoutType: "single-cell",
+            visualVariant: "default",
+            anchorFloor: cell.floor,
+            anchorColumn: cell.column,
+            columnSpan: 1,
+            rowSpan: 1,
         });
 
         block.validateLayout();
@@ -144,10 +245,22 @@ export class MatrixLayoutService {
                 unit.columnSpan === 1 &&
                 unit.rowSpan === 1
             ) {
-                block.customUnits =
-                    block.customUnits.filter(
-                        (item) => item.id !== unit.id
+                const standardDisplayCode =
+                    MatrixLayoutService.getStandardDisplayCode(
+                        block,
+                        unit.anchorFloor,
+                        unit.anchorColumn
                     );
+
+                if (unit.displayCode === standardDisplayCode) {
+                    block.customUnits =
+                        block.customUnits.filter(
+                            (item) => item.id !== unit.id
+                        );
+                } else {
+                    unit.type = UNIT_TYPE.STANDARD;
+                    unit.visualVariant = "default";
+                }
             } else {
                 unit.type = type;
                 unit.visualVariant =
@@ -542,6 +655,8 @@ export class MatrixLayoutService {
             return {
                 anchorFloor: floors[0],
                 anchorColumn: Math.min(...columns),
+                sourceFloor: floors[0],
+                sourceColumn: Math.min(...columns),
                 columnSpan: cells.length,
                 rowSpan: 1,
             };
@@ -560,6 +675,8 @@ export class MatrixLayoutService {
             return {
                 anchorFloor: Math.max(...floors),
                 anchorColumn: columns[0],
+                sourceFloor: Math.min(...floors),
+                sourceColumn: columns[0],
                 columnSpan: 1,
                 rowSpan: cells.length,
             };
@@ -691,6 +808,69 @@ export class MatrixLayoutService {
         }
 
         return "default";
+    }
+
+    static ensureDisplayCodeIsUnique(
+        block,
+        displayCode,
+        ignoredCustomUnitId = null,
+        ignoredStandardCellKey = null
+    ) {
+        const normalizedCode =
+            displayCode.toLocaleLowerCase("pt-BR");
+        const duplicateCustomUnit =
+            block.customUnits.find(
+                (unit) =>
+                    unit.id !== ignoredCustomUnitId &&
+                    unit.displayCode
+                        .toLocaleLowerCase("pt-BR") ===
+                        normalizedCode
+            );
+
+        if (duplicateCustomUnit) {
+            throw new Error(
+                `Já existe uma unidade com o número ${displayCode}.`
+            );
+        }
+
+        const occupationMap =
+            block.getCustomOccupationMap();
+
+        for (
+            let floor = block.typeFloorTemplate.startFloor;
+            floor <= block.typeFloorTemplate.endFloor;
+            floor += 1
+        ) {
+            for (const templateUnit of block.typeFloorTemplate.units) {
+                const cellKey = block.getCellKey(
+                    floor,
+                    templateUnit.column
+                );
+
+                if (
+                    cellKey === ignoredStandardCellKey ||
+                    block.isCellExcluded(
+                        floor,
+                        templateUnit.column
+                    ) ||
+                    occupationMap.has(cellKey)
+                ) {
+                    continue;
+                }
+
+                const standardCode =
+                    `${floor}${templateUnit.displaySuffix}`;
+
+                if (
+                    standardCode.toLocaleLowerCase("pt-BR") ===
+                    normalizedCode
+                ) {
+                    throw new Error(
+                        `Já existe uma unidade com o número ${displayCode}.`
+                    );
+                }
+            }
+        }
     }
 
     static sortExcludedCells(

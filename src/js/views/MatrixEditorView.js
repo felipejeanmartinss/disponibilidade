@@ -192,6 +192,29 @@ export class MatrixEditorView {
         >
             Aplicar tipo
         </button>
+
+        <label for="matrix-unit-number">
+            Número da unidade
+        </label>
+
+        <input
+            id="matrix-unit-number"
+            type="text"
+            maxlength="20"
+            placeholder="Ex.: 2401"
+            autocomplete="off"
+            data-matrix-unit-number
+        >
+
+        <button
+            class="matrix-editor__toolbar-button"
+            type="button"
+            data-matrix-action="rename-unit"
+            data-matrix-requires-selection
+            disabled
+        >
+            Aplicar número
+        </button>
     </div>
 
     <div class="matrix-editor__actions">
@@ -560,6 +583,13 @@ export class MatrixEditorView {
 
         if (unit.type === "coverage-duplex") {
             return "Cobertura dúplex";
+        }
+
+        if (
+            unit.type === "standard" &&
+            unit.layoutType === "single-cell"
+        ) {
+            return "Tipo";
         }
 
         if (

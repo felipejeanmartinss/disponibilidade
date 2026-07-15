@@ -200,6 +200,10 @@ export class MatrixEditorController {
                 this.applySelectedUnitType();
                 break;
 
+            case "rename-unit":
+                this.renameSelectedUnit();
+                break;
+
             default:
                 break;
         }
@@ -242,7 +246,7 @@ export class MatrixEditorController {
                 : "vertical";
 
         const confirmed = window.confirm(
-            `Unificar as células na direção ${directionLabel}? Os dados comerciais da célula âncora serão preservados; dados das demais unidades deixarão de fazer parte da unidade resultante.`
+            `Unificar as células na direção ${directionLabel}? Os dados comerciais da unidade de referência serão preservados (a unidade inferior nas uniões verticais); dados das demais unidades deixarão de fazer parte da unidade resultante.`
         );
 
         if (!confirmed) {
@@ -301,6 +305,32 @@ export class MatrixEditorController {
                 this.getActiveBlock(),
                 this.getSelectedCells(),
                 typeControl.value
+            );
+
+            this.finishMatrixChange();
+        } catch (error) {
+            this.showError(error.message);
+        }
+    }
+
+    renameSelectedUnit() {
+        const numberControl =
+            this.rootElement.querySelector(
+                "[data-matrix-unit-number]"
+            );
+
+        if (!numberControl) {
+            this.showError(
+                "O campo de número da unidade não foi encontrado."
+            );
+            return;
+        }
+
+        try {
+            MatrixLayoutService.renameUnit(
+                this.getActiveBlock(),
+                this.getSelectedCells(),
+                numberControl.value
             );
 
             this.finishMatrixChange();
@@ -558,6 +588,27 @@ export class MatrixEditorController {
                     this.selectedCells
                         .size
                 );
+        }
+
+        const numberControl =
+            this.rootElement.querySelector(
+                "[data-matrix-unit-number]"
+            );
+        const selectedElements =
+            this.rootElement.querySelectorAll(
+                "[data-matrix-cell].is-selected"
+            );
+
+        if (numberControl) {
+            const selectedCode =
+                selectedElements.length === 1
+                    ? selectedElements[0]
+                        .querySelector("strong")
+                        ?.textContent
+                        ?.trim() ?? ""
+                    : "";
+
+            numberControl.value = selectedCode;
         }
 
         const actionButtons =
