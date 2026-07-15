@@ -7,6 +7,10 @@ import {
     getChannelByValue,
 } from "../config/channels.js";
 
+import {
+    getUnitTypeByValue,
+} from "../config/unitTypes.js";
+
 const TIMED_STATUSES = new Set([
     UNIT_STATUS.RESERVED,
     UNIT_STATUS.APPROVED,
@@ -20,6 +24,9 @@ export class UnitCardView {
         const channel = unit.channel
             ? getChannelByValue(unit.channel)
             : null;
+        const unitType = getUnitTypeByValue(
+            unit.type
+        );
         const displayCode = String(unit.displayCode ?? unit.number);
 
         const channelIndicator = channel
@@ -46,13 +53,14 @@ export class UnitCardView {
                 data-status="${status.value}" data-channel="${channel?.value ?? ""}"
                 data-manager="${UnitCardView.escape(unit.manager)}"
                 data-visual-variant="${unit.visualVariant ?? "default"}"
-                aria-label="Unidade ${displayCode}. Status ${status.label}. ${channel ? `Canal ${channel.label}.` : ""}">
+                aria-label="Unidade ${displayCode}. Tipo ${unitType.label}. Status ${status.label}. ${channel ? `Canal ${channel.label}.` : ""}">
                 ${channelIndicator}
                 ${timer}
 
                 <span class="unit-card__number">${displayCode}</span>
 
                 <span class="unit-card__tooltip" role="tooltip">
+                    <span><strong>Tipo:</strong> ${unitType.label}</span>
                     <span><strong>Status:</strong> ${status.label}</span>
                     <span><strong>Canal:</strong> ${channel?.label ?? "—"}</span>
                     <span><strong>Gerente:</strong> ${UnitCardView.escape(unit.manager || "—")}</span>
