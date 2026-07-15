@@ -44,8 +44,8 @@ export class AppearanceView {
                         <div>
                             <h3>Canais de vendas</h3>
                             <p>
-                                Personalize o nome apresentado e a cor de identificação
-                                de cada canal.
+                                Personalize o nome completo, a etiqueta curta e a cor
+                                de identificação de cada canal.
                             </p>
                         </div>
 
@@ -55,11 +55,20 @@ export class AppearanceView {
                                     <img src="${channel.logoPath}" alt="" aria-hidden="true">
 
                                     <label>
-                                        <span>Nome</span>
+                                        <span>Nome completo</span>
                                         <input type="text"
                                             name="channel-label-${channel.value}"
                                             maxlength="60"
                                             value="${escapeHtml(channel.label)}"
+                                            required>
+                                    </label>
+
+                                    <label>
+                                        <span>Etiqueta</span>
+                                        <input type="text"
+                                            name="channel-short-label-${channel.value}"
+                                            maxlength="20"
+                                            value="${escapeHtml(channel.shortLabel)}"
                                             required>
                                     </label>
 

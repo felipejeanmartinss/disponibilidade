@@ -81,7 +81,7 @@
 
 .appearance-editor__channel-row {
     display: grid;
-    grid-template-columns: 72px minmax(180px, 1fr) minmax(130px, 0.45fr);
+    grid-template-columns: 72px minmax(180px, 1fr) minmax(110px, 0.5fr) minmax(130px, 0.45fr);
     align-items: end;
     gap: var(--spacing-3);
     padding: var(--spacing-3);

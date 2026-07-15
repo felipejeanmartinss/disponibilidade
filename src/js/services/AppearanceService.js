@@ -32,6 +32,7 @@ export class AppearanceService {
         const statusColors = {};
         const channelColors = {};
         const channelLabels = {};
+        const channelShortLabels = {};
 
         UNIT_STATUS_OPTIONS.forEach((status) => {
             statusColors[status.value] =
@@ -49,6 +50,10 @@ export class AppearanceService {
                 formData.get(
                     `channel-label-${channel.value}`
                 );
+            channelShortLabels[channel.value] =
+                formData.get(
+                    `channel-short-label-${channel.value}`
+                );
         });
 
         projectConfig.update({
@@ -57,6 +62,7 @@ export class AppearanceService {
                 statusColors,
                 channelColors,
                 channelLabels,
+                channelShortLabels,
             },
         });
 
@@ -113,6 +119,10 @@ export class AppearanceService {
                 appearance.channelLabels?.[
                     channel.value
                 ] ?? channel.label,
+            shortLabel:
+                appearance.channelShortLabels?.[
+                    channel.value
+                ] ?? channel.shortLabel,
             color:
                 appearance.channelColors?.[
                     channel.value

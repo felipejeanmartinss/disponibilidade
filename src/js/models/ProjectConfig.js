@@ -32,6 +32,15 @@ const DEFAULT_CHANNEL_LABELS =
         evs: "EV's",
     });
 
+const DEFAULT_CHANNEL_SHORT_LABELS =
+    Object.freeze({
+        "tegra-salao": "TEGRA",
+        "tegra-parcerias": "PARCERIAS",
+        "lopes-rio": "LOPES",
+        "somma-rio": "SOMMA",
+        evs: "EV'S",
+    });
+
 const DEFAULT_APPEARANCE =
     Object.freeze({
         channelIndicatorSize: 16,
@@ -48,6 +57,9 @@ const DEFAULT_APPEARANCE =
 
         channelLabels:
             DEFAULT_CHANNEL_LABELS,
+
+        channelShortLabels:
+            DEFAULT_CHANNEL_SHORT_LABELS,
     });
 
 export class ProjectConfig {
@@ -264,6 +276,13 @@ export class ProjectConfig {
                         ?.channelLabels,
                     DEFAULT_CHANNEL_LABELS
                 ),
+
+            channelShortLabels:
+                this.normalizeTextMap(
+                    appearance
+                        ?.channelShortLabels,
+                    DEFAULT_CHANNEL_SHORT_LABELS
+                ),
         };
     }
 
@@ -346,6 +365,11 @@ export class ProjectConfig {
                 channelLabels: {
                     ...this.appearance
                         .channelLabels,
+                },
+
+                channelShortLabels: {
+                    ...this.appearance
+                        .channelShortLabels,
                 },
             },
         };

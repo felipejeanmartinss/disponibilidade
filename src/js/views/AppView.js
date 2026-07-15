@@ -146,6 +146,7 @@ export class AppView {
                 return (
                     ConfigurationView.render({
                         projectConfig,
+                        channels,
                     })
                 );
 

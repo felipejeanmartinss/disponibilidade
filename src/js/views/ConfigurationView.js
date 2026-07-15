@@ -2,9 +2,14 @@ import {
     MatrixEditorView,
 } from "./MatrixEditorView.js";
 
+import {
+    AppearanceView,
+} from "./AppearanceView.js";
+
 export class ConfigurationView {
     static render({
         projectConfig,
+        channels,
     }) {
         const block =
             projectConfig.blocks[0];
@@ -57,6 +62,11 @@ export class ConfigurationView {
                         Atualizar estrutura
                     </button>
                 </form>
+
+                ${AppearanceView.render({
+                    channels,
+                    projectConfig,
+                })}
 
                 ${MatrixEditorView.render(
                     block

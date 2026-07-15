@@ -7,10 +7,6 @@ import {
 } from "./OperationMatrixView.js";
 
 import {
-    AppearanceView,
-} from "./AppearanceView.js";
-
-import {
     escapeHtml,
 } from "../utils/html.js";
 
@@ -41,11 +37,6 @@ export class OperationView {
                         type="search" placeholder="Ex.: 803">
                 </div>
             </section>
-
-            ${AppearanceView.render({
-                channels,
-                projectConfig,
-            })}
 
             <section class="workspace-panel operation-workspace" data-operation-workspace>
                 <header class="workspace-panel__header">

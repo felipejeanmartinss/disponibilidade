@@ -42,7 +42,10 @@ export class UnitCardView {
         const channelIndicator = channel
             ? `
                 <span class="unit-card__channel-logo">
-                    <img src="${channel.logoPath}" alt="${escapeHtml(channel.label)}">
+                    <img src="${channel.logoPath}" alt="" aria-hidden="true">
+                    <span class="unit-card__channel-label">
+                        ${escapeHtml(channel.shortLabel)}
+                    </span>
                 </span>
             `
             : "";
