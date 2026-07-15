@@ -28,8 +28,13 @@ export class Unit {
             UNIT_STATUS.AVAILABLE,
         channel = null,
         partner = "",
+        director = "",
+        partnerManager = "",
+        coordinator = "",
         manager = "",
         broker = "",
+        folder = {},
+        conditionalClients = [],
         notes = "",
     }) {
         const normalizedDisplayCode =
@@ -106,11 +111,31 @@ export class Unit {
                 this.channel
             );
 
+        this.director =
+            String(director).trim();
+
+        this.partnerManager =
+            this.normalizePartnerField(
+                partnerManager,
+                this.channel
+            );
+
+        this.coordinator =
+            String(coordinator).trim();
+
         this.manager =
             String(manager).trim();
 
         this.broker =
             String(broker).trim();
+
+        this.folder =
+            this.normalizeFolder(folder);
+
+        this.conditionalClients =
+            this.normalizeConditionalClients(
+                conditionalClients
+            );
 
         this.notes =
             String(notes).trim();
@@ -146,13 +171,57 @@ export class Unit {
         const isPartnership =
             channel ===
             SALES_CHANNEL
-                .TEGRA_PARTNERSHIPS;
+                .TEGRA_PARCERIAS;
 
         return isPartnership
             ? String(
                   partner
               ).trim()
             : "";
+    }
+
+    normalizePartnerField(value, channel) {
+        return channel === SALES_CHANNEL.TEGRA_PARCERIAS
+            ? String(value ?? "").trim()
+            : "";
+    }
+
+    normalizeFolder(folder = {}) {
+        return {
+            number: String(folder?.number ?? "").trim(),
+            type: String(folder?.type ?? "").trim(),
+            clientName: String(folder?.clientName ?? "").trim(),
+        };
+    }
+
+    normalizeConditionalClients(clients) {
+        if (!Array.isArray(clients)) {
+            return [];
+        }
+
+        return clients.map((client, index) => ({
+            id: String(
+                client?.id ??
+                `${this.id}-conditional-${index + 1}`
+            ),
+            name: String(client?.name ?? "").trim(),
+            folderNumber: String(client?.folderNumber ?? "").trim(),
+            folderType: String(client?.folderType ?? "").trim(),
+            channel: this.validateChannel(client?.channel),
+            partner: this.normalizePartner(
+                client?.partner,
+                this.validateChannel(client?.channel)
+            ),
+            director: String(client?.director ?? "").trim(),
+            partnerManager: this.normalizePartnerField(
+                client?.partnerManager,
+                this.validateChannel(client?.channel)
+            ),
+            coordinator: String(client?.coordinator ?? "").trim(),
+            manager: String(client?.manager ?? "").trim(),
+            broker: String(client?.broker ?? "").trim(),
+            notes: String(client?.notes ?? "").trim(),
+        }));
     }
 
     update({
@@ -162,9 +231,14 @@ export class Unit {
             this.channel,
         partner =
             this.partner,
+        director = this.director,
+        partnerManager = this.partnerManager,
+        coordinator = this.coordinator,
         manager =
             this.manager,
         broker = this.broker,
+        folder = this.folder,
+        conditionalClients = this.conditionalClients,
         notes = this.notes,
     }) {
         const validatedChannel =
@@ -189,6 +263,16 @@ export class Unit {
                 validatedChannel
             );
 
+        this.director = String(director).trim();
+
+        this.partnerManager =
+            this.normalizePartnerField(
+                partnerManager,
+                validatedChannel
+            );
+
+        this.coordinator = String(coordinator).trim();
+
         this.manager =
             String(
                 manager
@@ -198,6 +282,13 @@ export class Unit {
             String(
                 broker
             ).trim();
+
+        this.folder = this.normalizeFolder(folder);
+
+        this.conditionalClients =
+            this.normalizeConditionalClients(
+                conditionalClients
+            );
 
         this.notes =
             String(notes).trim();
@@ -251,11 +342,29 @@ export class Unit {
             partner:
                 this.partner,
 
+            director:
+                this.director,
+
+            partnerManager:
+                this.partnerManager,
+
+            coordinator:
+                this.coordinator,
+
             manager:
                 this.manager,
 
             broker:
                 this.broker,
+
+            folder: {
+                ...this.folder,
+            },
+
+            conditionalClients:
+                this.conditionalClients.map(
+                    (client) => ({ ...client })
+                ),
 
             notes:
                 this.notes,

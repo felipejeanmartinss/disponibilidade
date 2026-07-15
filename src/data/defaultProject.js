@@ -178,10 +178,10 @@ export function createDefaultProjectConfig() {
             },
 
             channelColors: {
-                "tegra-sales":
+                "tegra-salao":
                     "#0057B8",
 
-                "tegra-partnerships":
+                "tegra-parcerias":
                     "#008F68",
 
                 "lopes-rio":

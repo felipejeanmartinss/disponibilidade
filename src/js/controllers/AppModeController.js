@@ -44,6 +44,19 @@ export class AppModeController {
     }
 
     handleClick(event) {
+        const menuToggle =
+            event.target.closest("[data-user-menu-toggle]");
+
+        if (menuToggle) {
+            const menu = this.rootElement.querySelector("#user-mode-menu");
+            if (!menu) return;
+
+            const shouldOpen = menu.hidden;
+            menu.hidden = !shouldOpen;
+            menuToggle.setAttribute("aria-expanded", String(shouldOpen));
+            return;
+        }
+
         const modeButton =
             event.target.closest(
                 "[data-app-mode]"

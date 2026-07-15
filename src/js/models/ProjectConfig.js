@@ -15,8 +15,8 @@ const DEFAULT_STATUS_COLORS =
 
 const DEFAULT_CHANNEL_COLORS =
     Object.freeze({
-        "tegra-sales": "#0057B8",
-        "tegra-partnerships":
+        "tegra-salao": "#0057B8",
+        "tegra-parcerias":
             "#008F68",
         "lopes-rio": "#D6262F",
         "somma-rio": "#00205F",

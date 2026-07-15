@@ -89,8 +89,6 @@ export class AppView {
                             </div>
                         </div>
 
-                        ${navigation}
-
                         <div class="app-header__context">
                             <div class="project-context">
                                 <span class="project-context__label">
@@ -102,13 +100,7 @@ export class AppView {
                                 </strong>
                             </div>
 
-                            <div
-                                class="user-avatar"
-                                aria-label="Usuário Felipe Martins"
-                                title="Felipe Martins"
-                            >
-                                FM
-                            </div>
+                            ${navigation}
                         </div>
                     </div>
                 </header>

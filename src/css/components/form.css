@@ -4,6 +4,10 @@
     gap: var(--spacing-4);
 }
 
+.form-grid--three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .form-field {
     min-width: 0;
 }

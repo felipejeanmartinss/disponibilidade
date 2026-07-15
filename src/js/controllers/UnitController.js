@@ -67,6 +67,45 @@ export class UnitController {
     }
 
     handleClick(event) {
+        const conditionalSave =
+            event.target.closest("[data-conditional-save]");
+
+        if (conditionalSave) {
+            UnitModalView.saveConditionalDraft(this.rootElement);
+            return;
+        }
+
+        const conditionalCancel =
+            event.target.closest("[data-conditional-cancel]");
+
+        if (conditionalCancel) {
+            const form = this.rootElement.querySelector("#unit-form");
+            UnitModalView.clearConditionalEditor(form);
+            return;
+        }
+
+        const conditionalEdit =
+            event.target.closest("[data-conditional-edit]");
+
+        if (conditionalEdit) {
+            UnitModalView.editConditionalClient(
+                this.rootElement,
+                conditionalEdit.dataset.conditionalEdit
+            );
+            return;
+        }
+
+        const conditionalDelete =
+            event.target.closest("[data-conditional-delete]");
+
+        if (conditionalDelete) {
+            UnitModalView.removeConditionalClient(
+                this.rootElement,
+                conditionalDelete.dataset.conditionalDelete
+            );
+            return;
+        }
+
         const unitCard =
             event.target.closest(".unit-card");
 
@@ -74,7 +113,7 @@ export class UnitController {
             this.lastActiveCard = unitCard;
 
             this.openUnit(
-                unitCard.dataset.unit
+                unitCard.dataset.unitId
             );
 
             return;
@@ -99,17 +138,21 @@ export class UnitController {
     }
 
     handleChange(event) {
-        if (
-            event.target.id !==
-            "unit-channel"
-        ) {
-            return;
+        if (event.target.id === "unit-channel") {
+            UnitModalView.updatePartnerFields(
+                this.rootElement,
+                "unit",
+                event.target.value
+            );
         }
 
-        UnitModalView.updatePartnerField(
-            this.rootElement,
-            event.target.value
-        );
+        if (event.target.id === "conditional-channel") {
+            UnitModalView.updatePartnerFields(
+                this.rootElement,
+                "conditional",
+                event.target.value
+            );
+        }
     }
 
     handleSubmit(event) {
@@ -136,8 +179,13 @@ export class UnitController {
             status: formData.status,
             channel: formData.channel,
             partner: formData.partner,
+            director: formData.director,
+            partnerManager: formData.partnerManager,
+            coordinator: formData.coordinator,
             manager: formData.manager,
             broker: formData.broker,
+            folder: formData.folder,
+            conditionalClients: formData.conditionalClients,
             notes: formData.notes,
         });
 
@@ -191,11 +239,8 @@ export class UnitController {
         return unit;
     }
 
-    openUnit(unitNumber) {
-        const unit =
-            this.findUnitByNumber(
-                unitNumber
-            );
+    openUnit(unitId) {
+        const unit = this.findUnitById(unitId);
 
         UnitModalView.open(
             this.rootElement,

@@ -109,11 +109,26 @@ function applyStoredOperationalData(
                 partner:
                     storedUnit.partner,
 
+                director:
+                    storedUnit.director,
+
+                partnerManager:
+                    storedUnit.partnerManager,
+
+                coordinator:
+                    storedUnit.coordinator,
+
                 manager:
                     storedUnit.manager,
 
                 broker:
                     storedUnit.broker,
+
+                folder:
+                    storedUnit.folder,
+
+                conditionalClients:
+                    storedUnit.conditionalClients,
 
                 notes:
                     storedUnit.notes,

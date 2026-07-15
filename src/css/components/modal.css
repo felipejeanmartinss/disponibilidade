@@ -22,7 +22,7 @@ body.modal-open {
 }
 
 .modal__dialog {
-    width: min(100%, 720px);
+    width: min(100%, 960px);
     max-height: calc(100vh - (2 * var(--spacing-4)));
 
     overflow: hidden;
@@ -119,6 +119,92 @@ body.modal-open {
 .modal__section-title {
     margin-bottom: var(--spacing-4);
     font-size: var(--font-size-base);
+}
+
+.modal__section-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+}
+
+.modal__section-heading .modal__section-title {
+    margin-bottom: var(--spacing-1);
+}
+
+.modal__section-description {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.conditional-editor {
+    padding: var(--spacing-4);
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.conditional-editor__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-4);
+}
+
+.conditional-list {
+    display: grid;
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-4);
+}
+
+.conditional-client {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.conditional-client__position {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    color: var(--color-primary-700);
+    font-weight: var(--font-weight-bold);
+    background: var(--color-primary-50);
+    border-radius: 50%;
+}
+
+.conditional-client__content {
+    min-width: 0;
+    display: grid;
+}
+
+.conditional-client__content span,
+.conditional-list__empty {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.conditional-client__actions {
+    display: flex;
+    gap: var(--spacing-2);
+}
+
+.conditional-client__actions button {
+    padding: var(--spacing-2);
+    color: var(--color-primary-700);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.conditional-client__actions button:last-child {
+    color: var(--color-danger-700);
 }
 
 .modal__footer {

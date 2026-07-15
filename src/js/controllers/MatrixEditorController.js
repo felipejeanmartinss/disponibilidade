@@ -2,6 +2,10 @@ import {
     MatrixLayoutService,
 } from "../services/MatrixLayoutService.js";
 
+import {
+    ProjectStructureService,
+} from "../services/ProjectStructureService.js";
+
 export class MatrixEditorController {
     constructor({
         rootElement,
@@ -53,6 +57,9 @@ export class MatrixEditorController {
             this.handleClick.bind(
                 this
             );
+
+        this.handleSubmit =
+            this.handleSubmit.bind(this);
     }
 
     init() {
@@ -61,6 +68,30 @@ export class MatrixEditorController {
                 "click",
                 this.handleClick
             );
+
+        this.rootElement.addEventListener(
+            "submit",
+            this.handleSubmit
+        );
+    }
+
+    handleSubmit(event) {
+        if (!event.target.matches("[data-project-structure-form]")) {
+            return;
+        }
+
+        event.preventDefault();
+        const data = new FormData(event.target);
+
+        try {
+            ProjectStructureService.updatePrimaryBlock(
+                this.projectConfig,
+                Object.fromEntries(data.entries())
+            );
+            this.finishMatrixChange();
+        } catch (error) {
+            this.showError(error.message);
+        }
     }
 
     handleClick(event) {

@@ -95,60 +95,24 @@
     white-space: nowrap;
 }
 
-.unit-card__channel-dot {
-    --channel-dot-color:
-        var(--channel-unassigned);
-
+.unit-card__channel-logo {
     position: absolute;
-    top: var(--spacing-3);
-    right: var(--spacing-3);
+    top: var(--spacing-2);
+    right: var(--spacing-2);
 
-    width: 0.75rem;
-    height: 0.75rem;
+    width: 52px;
+    height: 22px;
 
-    background: var(--channel-dot-color);
-
-    border: 2px solid rgb(255 255 255 / 92%);
-    border-radius: 50%;
-
-    box-shadow:
-        0 0 0 1px rgb(15 23 42 / 18%),
-        0 2px 4px rgb(15 23 42 / 12%);
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 1px 3px rgb(15 23 42 / 18%);
 }
 
-.unit-card__channel-dot[
-    data-channel="tegra-sales"
-] {
-    --channel-dot-color:
-        var(--channel-tegra-sales);
-}
-
-.unit-card__channel-dot[
-    data-channel="tegra-partnerships"
-] {
-    --channel-dot-color:
-        var(--channel-tegra-partnerships);
-}
-
-.unit-card__channel-dot[
-    data-channel="lopes-rio"
-] {
-    --channel-dot-color:
-        var(--channel-lopes-rio);
-}
-
-.unit-card__channel-dot[
-    data-channel="somma-rio"
-] {
-    --channel-dot-color:
-        var(--channel-somma-rio);
-}
-
-.unit-card__channel-dot[
-    data-channel="evs"
-] {
-    --channel-dot-color:
-        var(--channel-evs);
+.unit-card__channel-logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
 }
 
 /* Status: disponível */

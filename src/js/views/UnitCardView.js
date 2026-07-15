@@ -29,11 +29,12 @@ export class UnitCardView {
         const channelIndicator =
             channel
                 ? `
-                    <span
-                        class="unit-card__channel-dot"
-                        data-channel="${channel.value}"
-                        aria-hidden="true"
-                    ></span>
+                    <span class="unit-card__channel-logo">
+                        <img
+                            src="${channel.logoPath}"
+                            alt="${channel.label}"
+                        >
+                    </span>
                 `
                 : "";
 
@@ -44,16 +45,12 @@ export class UnitCardView {
                         ${channel.label}
                     </span>
                 `
-                : `
-                    <span class="unit-card__channel-name">
-                        Sem canal definido
-                    </span>
-                `;
+                : "";
 
         const accessibleChannel =
             channel
                 ? `Canal ${channel.label}.`
-                : "Sem canal definido.";
+                : "";
 
         const gardenClass =
             unit.visualVariant ===

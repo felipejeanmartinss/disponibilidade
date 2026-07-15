@@ -10,26 +10,36 @@ export const SALES_CHANNEL_OPTIONS = Object.freeze([
     Object.freeze({
         value: SALES_CHANNEL.TEGRA_SALAO,
         label: "Tegra Vendas - Salão",
+        shortLabel: "Tegra",
+        logoPath: "./assets/logos/channels/tegra.svg",
     }),
 
     Object.freeze({
         value: SALES_CHANNEL.TEGRA_PARCERIAS,
         label: "Tegra Vendas - Parcerias",
+        shortLabel: "Parcerias",
+        logoPath: "./assets/logos/channels/tegra-parcerias.svg",
     }),
 
     Object.freeze({
         value: SALES_CHANNEL.LOPES_RIO,
         label: "Lopes Rio",
+        shortLabel: "Lopes",
+        logoPath: "./assets/logos/channels/lopes-rio.svg",
     }),
 
     Object.freeze({
         value: SALES_CHANNEL.SOMMA_RIO,
         label: "Somma Rio",
+        shortLabel: "Somma",
+        logoPath: "./assets/logos/channels/somma-rio.svg",
     }),
 
     Object.freeze({
         value: SALES_CHANNEL.EVS,
         label: "EV's",
+        shortLabel: "EV's",
+        logoPath: "./assets/logos/channels/evs.svg",
     }),
 ]);
 
