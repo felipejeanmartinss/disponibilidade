@@ -109,6 +109,9 @@ function applyStoredOperationalData(
                 partner:
                     storedUnit.partner,
 
+                superintendent:
+                    storedUnit.superintendent,
+
                 director:
                     storedUnit.director,
 

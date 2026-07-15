@@ -67,6 +67,7 @@ export class UnitModalView {
                             <section class="modal__section">
                                 <h3 class="modal__section-title">Equipe responsável</h3>
                                 <div class="form-grid">
+                                    ${UnitModalView.renderInput("unit-superintendent", "superintendent", "Superintendente")}
                                     ${UnitModalView.renderInput("unit-director", "director", "Diretor")}
                                     ${UnitModalView.renderInput("unit-coordinator", "coordinator", "Coordenador")}
                                     <div class="form-field form-field--full"
@@ -122,6 +123,7 @@ export class UnitModalView {
                                             <input class="form-control" id="conditional-partner"
                                                 name="conditionalPartner" type="text">
                                         </div>
+                                        ${UnitModalView.renderInput("conditional-superintendent", "conditionalSuperintendent", "Superintendente")}
                                         ${UnitModalView.renderInput("conditional-director", "conditionalDirector", "Diretor")}
                                         <div class="form-field" id="conditional-partner-manager-field" hidden>
                                             <label class="form-label" for="conditional-partner-manager">
@@ -197,6 +199,7 @@ export class UnitModalView {
             status: unit.status ?? UNIT_STATUS.AVAILABLE,
             channel: unit.channel ?? "",
             partner: unit.partner,
+            superintendent: unit.superintendent,
             director: unit.director,
             partnerManager: unit.partnerManager,
             coordinator: unit.coordinator,
@@ -262,6 +265,7 @@ export class UnitModalView {
             folderType: form.elements.conditionalFolderType.value.trim(),
             channel: form.elements.conditionalChannel.value || null,
             partner: form.elements.conditionalPartner.value.trim(),
+            superintendent: form.elements.conditionalSuperintendent.value.trim(),
             director: form.elements.conditionalDirector.value.trim(),
             partnerManager: form.elements.conditionalPartnerManager.value.trim(),
             coordinator: form.elements.conditionalCoordinator.value.trim(),
@@ -302,6 +306,7 @@ export class UnitModalView {
             conditionalFolderType: client.folderType,
             conditionalChannel: client.channel,
             conditionalPartner: client.partner,
+            conditionalSuperintendent: client.superintendent,
             conditionalDirector: client.director,
             conditionalPartnerManager: client.partnerManager,
             conditionalCoordinator: client.coordinator,
@@ -330,7 +335,7 @@ export class UnitModalView {
     static clearConditionalEditor(form) {
         ["conditionalEditingId", "conditionalName", "conditionalFolderNumber",
             "conditionalFolderType", "conditionalChannel", "conditionalPartner",
-            "conditionalDirector", "conditionalPartnerManager", "conditionalCoordinator",
+            "conditionalSuperintendent", "conditionalDirector", "conditionalPartnerManager", "conditionalCoordinator",
             "conditionalManager", "conditionalBroker", "conditionalNotes"].forEach((name) => {
             form.elements[name].value = "";
         });
@@ -383,6 +388,7 @@ export class UnitModalView {
             status: form.elements.status.value,
             channel: form.elements.channel.value || null,
             partner: form.elements.partner.value.trim(),
+            superintendent: form.elements.superintendent.value.trim(),
             director: form.elements.director.value.trim(),
             partnerManager: form.elements.partnerManager.value.trim(),
             coordinator: form.elements.coordinator.value.trim(),

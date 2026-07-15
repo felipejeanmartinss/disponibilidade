@@ -28,6 +28,7 @@ export class Unit {
             UNIT_STATUS.AVAILABLE,
         channel = null,
         partner = "",
+        superintendent = "",
         director = "",
         partnerManager = "",
         coordinator = "",
@@ -113,6 +114,9 @@ export class Unit {
 
         this.director =
             String(director).trim();
+
+        this.superintendent =
+            String(superintendent).trim();
 
         this.partnerManager =
             this.normalizePartnerField(
@@ -212,6 +216,7 @@ export class Unit {
                 client?.partner,
                 this.validateChannel(client?.channel)
             ),
+            superintendent: String(client?.superintendent ?? "").trim(),
             director: String(client?.director ?? "").trim(),
             partnerManager: this.normalizePartnerField(
                 client?.partnerManager,
@@ -231,6 +236,7 @@ export class Unit {
             this.channel,
         partner =
             this.partner,
+        superintendent = this.superintendent,
         director = this.director,
         partnerManager = this.partnerManager,
         coordinator = this.coordinator,
@@ -264,6 +270,8 @@ export class Unit {
             );
 
         this.director = String(director).trim();
+
+        this.superintendent = String(superintendent).trim();
 
         this.partnerManager =
             this.normalizePartnerField(
@@ -341,6 +349,9 @@ export class Unit {
 
             partner:
                 this.partner,
+
+            superintendent:
+                this.superintendent,
 
             director:
                 this.director,

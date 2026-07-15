@@ -179,6 +179,7 @@ export class UnitController {
             status: formData.status,
             channel: formData.channel,
             partner: formData.partner,
+            superintendent: formData.superintendent,
             director: formData.director,
             partnerManager: formData.partnerManager,
             coordinator: formData.coordinator,

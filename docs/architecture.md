@@ -27,7 +27,7 @@ Uma unidade contém:
 
 - posição física e código de exibição;
 - status e canal;
-- equipe responsável;
+- equipe responsável, incluindo Superintendente, Diretor e gestão comercial;
 - pasta comercial;
 - fila de clientes condicionais;
 - observações.

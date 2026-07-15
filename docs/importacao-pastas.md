@@ -11,6 +11,7 @@ A futura planilha poderá usar os seguintes cabeçalhos:
 | Nome do cliente | Não | Cliente exemplo |
 | Canal | Não | lopes-rio |
 | Parceira | Condicional | Imobiliária X |
+| Superintendente | Não | Nome |
 | Diretor | Não | Nome |
 | Gerente Parceiro | Condicional | Nome |
 | Coordenador | Não | Nome |

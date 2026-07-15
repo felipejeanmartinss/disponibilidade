@@ -12,6 +12,7 @@ export class FolderImportService {
         clientName: ["cliente", "nome cliente", "nome do cliente"],
         channel: ["canal", "canal de vendas"],
         partner: ["parceira", "imobiliaria parceira"],
+        superintendent: ["superintendente"],
         director: ["diretor"],
         partnerManager: ["gerente parceiro"],
         coordinator: ["coordenador"],
@@ -98,6 +99,7 @@ export class FolderImportService {
             unit.update({
                 channel: data.channel || unit.channel,
                 partner: data.partner,
+                superintendent: data.superintendent,
                 director: data.director,
                 partnerManager: data.partnerManager,
                 coordinator: data.coordinator,
