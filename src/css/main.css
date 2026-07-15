@@ -8,6 +8,7 @@
 @import url("./layout/main-content.css");
 
 @import url("./components/app-navigation.css");
+@import url("./components/appearance-editor.css");
 @import url("./components/form.css");
 @import url("./components/matrix-editor.css");
 @import url("./components/modal.css");

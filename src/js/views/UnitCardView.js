@@ -11,6 +11,10 @@ import {
     getUnitTypeByValue,
 } from "../config/unitTypes.js";
 
+import {
+    escapeHtml,
+} from "../utils/html.js";
+
 const TIMED_STATUSES = new Set([
     UNIT_STATUS.RESERVED,
     UNIT_STATUS.APPROVED,
@@ -19,10 +23,16 @@ const TIMED_STATUSES = new Set([
 ]);
 
 export class UnitCardView {
-    static render(unit) {
+    static render(
+        unit,
+        channels = null
+    ) {
         const status = getStatusByValue(unit.status);
         const channel = unit.channel
-            ? getChannelByValue(unit.channel)
+            ? channels?.find(
+                (item) =>
+                    item.value === unit.channel
+            ) ?? getChannelByValue(unit.channel)
             : null;
         const unitType = getUnitTypeByValue(
             unit.type
@@ -32,7 +42,7 @@ export class UnitCardView {
         const channelIndicator = channel
             ? `
                 <span class="unit-card__channel-logo">
-                    <img src="${channel.logoPath}" alt="${channel.label}">
+                    <img src="${channel.logoPath}" alt="${escapeHtml(channel.label)}">
                 </span>
             `
             : "";
@@ -53,16 +63,16 @@ export class UnitCardView {
                 data-status="${status.value}" data-channel="${channel?.value ?? ""}"
                 data-manager="${UnitCardView.escape(unit.manager)}"
                 data-visual-variant="${unit.visualVariant ?? "default"}"
-                aria-label="Unidade ${displayCode}. Tipo ${unitType.label}. Status ${status.label}. ${channel ? `Canal ${channel.label}.` : ""}">
+                aria-label="Unidade ${escapeHtml(displayCode)}. Tipo ${unitType.label}. Status ${status.label}. ${channel ? `Canal ${escapeHtml(channel.label)}.` : ""}">
                 ${channelIndicator}
                 ${timer}
 
-                <span class="unit-card__number">${displayCode}</span>
+                <span class="unit-card__number">${escapeHtml(displayCode)}</span>
 
                 <span class="unit-card__tooltip" role="tooltip">
                     <span><strong>Tipo:</strong> ${unitType.label}</span>
                     <span><strong>Status:</strong> ${status.label}</span>
-                    <span><strong>Canal:</strong> ${channel?.label ?? "—"}</span>
+                    <span><strong>Canal:</strong> ${channel ? escapeHtml(channel.label) : "—"}</span>
                     <span><strong>Gerente:</strong> ${UnitCardView.escape(unit.manager || "—")}</span>
                 </span>
             </button>
@@ -70,12 +80,7 @@ export class UnitCardView {
     }
 
     static escape(value) {
-        return String(value ?? "")
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
+        return escapeHtml(value);
     }
 
     static getVariantClass(variant) {
@@ -97,7 +102,18 @@ export class UnitCardView {
         return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
     }
 
-    static renderList(units) {
-        return units.map((unit) => UnitCardView.render(unit)).join("");
+    static renderList(
+        units,
+        channels = null
+    ) {
+        return units
+            .map(
+                (unit) =>
+                    UnitCardView.render(
+                        unit,
+                        channels
+                    )
+            )
+            .join("");
     }
 }

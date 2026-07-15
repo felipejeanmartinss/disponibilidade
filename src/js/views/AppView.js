@@ -130,7 +130,7 @@ export class AppView {
                     </div>
                 </footer>
 
-                ${UnitModalView.render()}
+                ${UnitModalView.render(channels)}
             </div>
         `;
     }

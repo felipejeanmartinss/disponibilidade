@@ -28,6 +28,10 @@ import {
 } from "./services/ProjectConfigService.js";
 
 import {
+    AppearanceService,
+} from "./services/AppearanceService.js";
+
+import {
     UnitFactory,
 } from "./factories/UnitFactory.js";
 
@@ -50,6 +54,10 @@ import {
 import {
     OperationController,
 } from "./controllers/OperationController.js";
+
+import {
+    AppearanceController,
+} from "./controllers/AppearanceController.js";
 
 function createUnitsFromStoredData(
     storedUnits
@@ -219,12 +227,22 @@ function bootstrap() {
 
     const renderApplication =
         () => {
+            AppearanceService.applyToDocument(
+                projectConfig.appearance
+            );
+
+            const displayChannels =
+                AppearanceService.createDisplayChannels(
+                    SALES_CHANNEL_OPTIONS,
+                    projectConfig.appearance
+                );
+
             appView.render({
                 config:
                     APP_CONFIG,
 
                 channels:
-                    SALES_CHANNEL_OPTIONS,
+                    displayChannels,
 
                 units,
 
@@ -238,6 +256,15 @@ function bootstrap() {
             });
 
             operationController?.restoreState();
+        };
+
+    const saveAppearanceAndRender =
+        () => {
+            ProjectConfigService.save(
+                projectConfig
+            );
+
+            renderApplication();
         };
 
     const saveUnitsAndRender =
@@ -284,6 +311,16 @@ function bootstrap() {
         });
 
     matrixEditorController.init();
+
+    const appearanceController =
+        new AppearanceController({
+            rootElement,
+            projectConfig,
+            onAppearanceChange:
+                saveAppearanceAndRender,
+        });
+
+    appearanceController.init();
 
     const appModeController =
         new AppModeController({

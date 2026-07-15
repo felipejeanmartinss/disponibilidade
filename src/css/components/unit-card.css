@@ -11,6 +11,8 @@
     --unit-card-text:
         var(--status-available-text);
 
+    --channel-accent: transparent;
+
     position: relative;
 
     min-width: 0;
@@ -104,8 +106,30 @@
     height: 22px;
 
     overflow: hidden;
+    background: var(--color-white);
+    border: 2px solid var(--channel-accent);
     border-radius: var(--radius-sm);
     box-shadow: 0 1px 3px rgb(15 23 42 / 18%);
+}
+
+.unit-card[data-channel="tegra-salao"] {
+    --channel-accent: var(--channel-tegra-salao);
+}
+
+.unit-card[data-channel="tegra-parcerias"] {
+    --channel-accent: var(--channel-tegra-parcerias);
+}
+
+.unit-card[data-channel="lopes-rio"] {
+    --channel-accent: var(--channel-lopes-rio);
+}
+
+.unit-card[data-channel="somma-rio"] {
+    --channel-accent: var(--channel-somma-rio);
+}
+
+.unit-card[data-channel="evs"] {
+    --channel-accent: var(--channel-evs);
 }
 
 .unit-card__timer {

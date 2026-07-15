@@ -6,6 +6,14 @@ import {
     OperationMatrixView,
 } from "./OperationMatrixView.js";
 
+import {
+    AppearanceView,
+} from "./AppearanceView.js";
+
+import {
+    escapeHtml,
+} from "../utils/html.js";
+
 export class OperationView {
     static render({ channels, units, projectConfig }) {
         const matrices = projectConfig.blocks
@@ -14,7 +22,7 @@ export class OperationView {
                     ${projectConfig.blocks.length > 1
                         ? `<h3 class="operation-block__title">${block.name}</h3>`
                         : ""}
-                    ${OperationMatrixView.render({ block, units })}
+                    ${OperationMatrixView.render({ block, units, channels })}
                 </section>
             `)
             .join("");
@@ -33,6 +41,11 @@ export class OperationView {
                         type="search" placeholder="Ex.: 803">
                 </div>
             </section>
+
+            ${AppearanceView.render({
+                channels,
+                projectConfig,
+            })}
 
             <section class="workspace-panel operation-workspace" data-operation-workspace>
                 <header class="workspace-panel__header">
@@ -73,7 +86,7 @@ export class OperationView {
                 <select class="toolbar-field__control" id="${id}">
                     <option value="">Todos</option>
                     ${options.map((option) => `
-                        <option value="${option.value}">${option.label}</option>
+                        <option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>
                     `).join("")}
                 </select>
             </div>

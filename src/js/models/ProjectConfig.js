@@ -23,6 +23,15 @@ const DEFAULT_CHANNEL_COLORS =
         evs: "#7C3AED",
     });
 
+const DEFAULT_CHANNEL_LABELS =
+    Object.freeze({
+        "tegra-salao": "Tegra Vendas - Salão",
+        "tegra-parcerias": "Tegra Vendas - Parcerias",
+        "lopes-rio": "Lopes Rio",
+        "somma-rio": "Somma Rio",
+        evs: "EV's",
+    });
+
 const DEFAULT_APPEARANCE =
     Object.freeze({
         channelIndicatorSize: 16,
@@ -36,6 +45,9 @@ const DEFAULT_APPEARANCE =
 
         channelColors:
             DEFAULT_CHANNEL_COLORS,
+
+        channelLabels:
+            DEFAULT_CHANNEL_LABELS,
     });
 
 export class ProjectConfig {
@@ -177,6 +189,24 @@ export class ProjectConfig {
         return colors;
     }
 
+    normalizeTextMap(
+        providedTexts,
+        defaultTexts
+    ) {
+        const texts = {};
+
+        Object.entries(defaultTexts).forEach(
+            ([key, defaultText]) => {
+                texts[key] = this.normalizeText(
+                    providedTexts?.[key],
+                    defaultText
+                );
+            }
+        );
+
+        return texts;
+    }
+
     normalizeAppearance(
         appearance
     ) {
@@ -226,6 +256,13 @@ export class ProjectConfig {
                     appearance
                         ?.channelColors,
                     DEFAULT_CHANNEL_COLORS
+                ),
+
+            channelLabels:
+                this.normalizeTextMap(
+                    appearance
+                        ?.channelLabels,
+                    DEFAULT_CHANNEL_LABELS
                 ),
         };
     }
@@ -304,6 +341,11 @@ export class ProjectConfig {
                 channelColors: {
                     ...this.appearance
                         .channelColors,
+                },
+
+                channelLabels: {
+                    ...this.appearance
+                        .channelLabels,
                 },
             },
         };

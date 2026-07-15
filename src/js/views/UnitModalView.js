@@ -8,21 +8,27 @@ import {
     SALES_CHANNEL_OPTIONS,
 } from "../config/channels.js";
 
+import {
+    escapeHtml,
+} from "../utils/html.js";
+
 export class UnitModalView {
     static renderOptions(options) {
         return options
             .map(({ value, label }) => `
-                <option value="${value}">${label}</option>
+                <option value="${escapeHtml(value)}">${escapeHtml(label)}</option>
             `)
             .join("");
     }
 
-    static render() {
+    static render(
+        channels = SALES_CHANNEL_OPTIONS
+    ) {
         const statusOptions =
             UnitModalView.renderOptions(UNIT_STATUS_OPTIONS);
 
         const channelOptions =
-            UnitModalView.renderOptions(SALES_CHANNEL_OPTIONS);
+            UnitModalView.renderOptions(channels);
 
         return `
             <div class="modal" id="unit-modal" role="dialog"
