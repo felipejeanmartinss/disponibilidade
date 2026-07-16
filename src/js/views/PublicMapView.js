@@ -141,7 +141,9 @@ export class PublicMapView {
                     class="public-matrix"
                     style="
                         --public-columns: ${block.columns};
-                        --public-min-width: ${56 + block.columns * 144}px;
+                        --public-fit-row: calc(
+                            ${(100 / block.floors).toFixed(4)}vh - 0.5vw
+                        );
                     "
                 >
                     ${content.join("")}

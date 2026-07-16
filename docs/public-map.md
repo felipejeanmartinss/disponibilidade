@@ -28,6 +28,15 @@ de clientes.
    o endereço existente.
 4. A política RLS permite leitura anônima somente quando `is_active = true`.
 
+## Exibição responsiva
+
+- em celulares, as colunas ocupam a largura disponível e a navegação ocorre
+  verticalmente;
+- em telas verticais de grande formato, a altura dos pavimentos se ajusta para
+  exibir a matriz completa;
+- em telas estreitas, o texto do status permanece disponível para leitores de
+  tela, enquanto a cor do card representa visualmente o status.
+
 O link não deve ser considerado secreto. Qualquer pessoa que receber o endereço
 poderá visualizar o snapshot enquanto ele estiver ativo. A revogação do link
 será adicionada em uma evolução posterior usando o campo `is_active`.
