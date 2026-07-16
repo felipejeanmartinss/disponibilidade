@@ -26,7 +26,7 @@ Na primeira sessão autenticada, o `SupabasePersistenceService`:
 5. passa a sincronizar configuração, unidades e catálogo de pastas.
 
 O projeto remoto é a fonte compartilhada após essa associação. O login
-Microsoft é o próximo requisito para ativar esse fluxo na interface.
+O login por e-mail e senha ativa esse fluxo para usuários autorizados.
 
 ## Dados sincronizados
 

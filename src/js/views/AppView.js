@@ -47,11 +47,13 @@ export class AppView {
         modeOptions,
         activeMode,
         projectConfig,
+        user,
     }) {
         const navigation =
             AppNavigationView.render(
                 modeOptions,
-                activeMode
+                activeMode,
+                user
             );
 
         const modeContent =

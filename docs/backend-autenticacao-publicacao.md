@@ -5,7 +5,7 @@
 Usar Supabase como camada compartilhada da aplicação:
 
 - **PostgreSQL:** projetos, unidades, catálogo de pastas e publicações;
-- **Supabase Auth:** login Microsoft corporativo pelo provedor Azure;
+- **Supabase Auth:** login protegido por e-mail e senha;
 - **Row Level Security:** separação entre dados internos, pessoais e públicos;
 - **Realtime:** sincronização futura do mapa entre usuários conectados.
 
@@ -28,8 +28,8 @@ do canal.
 
 1. aplicar a migration inicial e validar as políticas RLS;
 2. criar repositórios Supabase e migrar o LocalStorage com cópia de segurança;
-3. configurar Azure (Microsoft) no Supabase Auth;
-4. registrar a aplicação no Microsoft Entra como interna (single-tenant);
+3. habilitar o provedor de e-mail e senha no Supabase Auth;
+4. desabilitar o cadastro público e criar usuários pela administração;
 5. criar perfis e permissões;
 6. publicar snapshots sanitizados e gerar links revogáveis.
 

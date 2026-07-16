@@ -39,7 +39,7 @@
 
 - interface de repositório de dados;
 - PostgreSQL e políticas RLS;
-- autenticação Microsoft corporativa via Supabase Auth;
+- autenticação por e-mail e senha via Supabase Auth;
 - perfis e permissões;
 - trilha de auditoria;
 - migração do LocalStorage;

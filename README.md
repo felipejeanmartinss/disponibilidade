@@ -11,6 +11,7 @@ Aplicação web para configurar empreendimentos imobiliários e acompanhar a pos
 - catálogo CSV de clientes e preenchimento automático pelo número da pasta;
 - persistência local no navegador;
 - fundação Supabase com schema versionado e políticas RLS;
+- acesso protegido por e-mail e senha com Supabase Auth;
 - indicadores visuais por status e canal de vendas.
 
 ## Arquitetura
@@ -29,7 +30,8 @@ src/
 ```
 
 Consulte [a arquitetura](docs/architecture.md), [o roadmap](docs/roadmap.md),
-[a configuração do Supabase](docs/supabase-setup.md) e
+[a configuração do Supabase](docs/supabase-setup.md),
+[a configuração do login com senha](docs/password-auth-setup.md) e
 [a estratégia de persistência](docs/supabase-persistence.md).
 
 ## Execução local
@@ -38,4 +40,6 @@ Como a aplicação usa módulos JavaScript, execute `index.html` por um servidor
 
 ## Dados e privacidade
 
-Nesta fase, os dados ficam somente no `localStorage` do navegador. Não use dados pessoais reais em ambiente público até Firebase, autenticação e regras de acesso estarem configurados.
+O navegador mantém uma cópia local para contingência. Usuários autenticados
+sincronizam os dados com o Supabase de acordo com as políticas RLS. Não use
+dados pessoais reais em ambientes públicos ou sem controle de acesso.

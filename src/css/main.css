@@ -8,6 +8,7 @@
 @import url("./layout/main-content.css");
 
 @import url("./components/app-navigation.css");
+@import url("./components/auth.css");
 @import url("./components/appearance-editor.css");
 @import url("./components/executive-dashboard.css");
 @import url("./components/form.css");

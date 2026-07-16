@@ -52,12 +52,24 @@ import {
 } from "./services/SupabasePersistenceService.js";
 
 import {
+    AuthService,
+} from "./services/AuthService.js";
+
+import {
     UnitFactory,
 } from "./factories/UnitFactory.js";
 
 import {
     AppView,
 } from "./views/AppView.js";
+
+import {
+    AuthView,
+} from "./views/AuthView.js";
+
+import {
+    AuthController,
+} from "./controllers/AuthController.js";
 
 import {
     AppModeController,
@@ -239,6 +251,73 @@ async function bootstrap() {
         }
     }
 
+    const authView =
+        new AuthView(rootElement);
+
+    let authService;
+
+    try {
+        authService =
+            new AuthService();
+    } catch (error) {
+        console.error(
+            "Serviço de autenticação indisponível:",
+            error
+        );
+
+        authView.renderLogin({
+            appName:
+                APP_CONFIG.name,
+            errorMessage:
+                "O serviço de autenticação não foi carregado. Atualize a página e tente novamente.",
+        });
+
+        return;
+    }
+
+    const authController =
+        new AuthController({
+            rootElement,
+            authService,
+        });
+
+    authController.init();
+
+    let session;
+
+    try {
+        session =
+            await authService.getSession();
+    } catch (error) {
+        console.error(
+            "Não foi possível consultar a sessão:",
+            error
+        );
+
+        authView.renderLogin({
+            appName:
+                APP_CONFIG.name,
+            errorMessage:
+                "Não foi possível validar sua sessão. Tente novamente.",
+        });
+
+        return;
+    }
+
+    if (!session) {
+        authView.renderLogin({
+            appName:
+                APP_CONFIG.name,
+        });
+
+        return;
+    }
+
+    const currentUser =
+        AuthService.createUserProfile(
+            session
+        );
+
     const defaultProjectConfig =
         createDefaultProjectConfig();
 
@@ -368,6 +447,9 @@ async function bootstrap() {
                     state.activeMode,
 
                 projectConfig,
+
+                user:
+                    currentUser,
             });
 
             operationController?.restoreState();

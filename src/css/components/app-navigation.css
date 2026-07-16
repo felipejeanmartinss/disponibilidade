@@ -64,3 +64,41 @@
     outline: 3px solid rgb(21 101 192 / 18%);
     outline-offset: 1px;
 }
+
+.app-navigation__divider {
+    height: 1px;
+    margin: var(--spacing-1) var(--spacing-2);
+    background: var(--color-border);
+}
+
+.app-navigation__user {
+    display: grid;
+    gap: 2px;
+    padding: var(--spacing-2) var(--spacing-3);
+}
+
+.app-navigation__user strong,
+.app-navigation__user span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.app-navigation__user strong {
+    color: var(--color-gray-800);
+    font-size: var(--font-size-sm);
+}
+
+.app-navigation__user span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.app-navigation__button--danger {
+    color: var(--color-danger);
+}
+
+.app-navigation__button--danger:hover {
+    color: var(--color-danger);
+    background: #fef2f2;
+}

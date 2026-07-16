@@ -7,7 +7,7 @@ Project URL: https://wzdfiofvnfxuohhsypqg.supabase.co
 ```
 
 A aplicação usa somente a Publishable Key no navegador. Nunca adicione ao
-repositório a senha do banco, `service_role`, secret key ou segredo do Azure.
+repositório a senha do banco, `service_role`, secret key ou senha de usuário.
 
 ## Aplicar o schema inicial
 
@@ -30,8 +30,8 @@ O cliente Supabase já é inicializado pela aplicação, mas os dados continuam 
 LocalStorage. Essa transição evita perda de informações enquanto autenticação,
 repositórios remotos e rotina de migração ainda estão sendo construídos.
 
-## Próxima etapa
+## Autenticação
 
-A camada de persistência já está preparada com fallback local. O login Microsoft
-é a próxima etapa, pois as políticas internas exigem uma sessão autenticada para
-ativar a sincronização remota.
+A aplicação exige uma sessão autenticada antes de carregar os dados comerciais.
+Consulte [a configuração do login com senha](password-auth-setup.md) para
+habilitar o provedor de e-mail, cadastrar usuários e controlar o acesso.
