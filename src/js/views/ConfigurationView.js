@@ -6,6 +6,10 @@ import {
     AppearanceView,
 } from "./AppearanceView.js";
 
+import {
+    FolderImportView,
+} from "./FolderImportView.js";
+
 export class ConfigurationView {
     static render({
         projectConfig,
@@ -69,6 +73,8 @@ export class ConfigurationView {
                     statuses,
                     projectConfig,
                 })}
+
+                ${FolderImportView.render()}
 
                 ${MatrixEditorView.render(
                     block

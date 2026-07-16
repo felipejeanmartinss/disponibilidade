@@ -17,7 +17,8 @@
 - fila de clientes condicionais;
 - logos locais dos canais;
 - filtros por empreendimento, bloco, pavimento, status e busca;
-- importação CSV/XLSX com prévia, validação e relatório de erros.
+- importação CSV com prévia, validação e relatório de erros;
+- adaptador futuro para importação XLSX;
 - filtros por bloco, pavimento, status, canal e unidade;
 - tela cheia e zoom do mapa;
 - timer dos status comerciais com limite de cinco horas;

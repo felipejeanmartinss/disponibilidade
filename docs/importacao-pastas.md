@@ -18,4 +18,20 @@ A futura planilha poderá usar os seguintes cabeçalhos:
 | Gerente | Não | Nome |
 | Corretor | Não | Nome |
 
-O fluxo previsto é: selecionar arquivo → visualizar prévia → validar → corrigir erros → confirmar importação → registrar auditoria.
+## Fluxo implementado
+
+Na Configuração, abra **Importar base de pastas** e siga:
+
+1. baixe o modelo CSV, se necessário;
+2. selecione um arquivo separado por ponto e vírgula ou vírgula;
+3. confira a pré-visualização e as mensagens de validação;
+4. corrija a origem caso existam erros;
+5. confirme a importação para atualizar e persistir as unidades.
+
+Campos vazios preservam os dados atuais. Uma unidade repetida, inexistente ou
+ambígua impede a confirmação. O canal pode ser informado por código, nome ou
+etiqueta e precisa existir na configuração comercial.
+
+O leitor CSV é um adaptador separado do `FolderImportService`. Um futuro leitor
+XLSX poderá entregar as mesmas linhas ao serviço sem alterar Models, Views ou as
+regras de validação.

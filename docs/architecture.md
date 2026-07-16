@@ -38,4 +38,7 @@ O `LocalStorageService` mantém dados operacionais e o `ProjectConfigService` ma
 
 ## Importação
 
-O `FolderImportService` recebe linhas já convertidas de CSV/XLSX, normaliza cabeçalhos, valida unidades e aplica dados de pasta e equipe. O leitor de arquivos será implementado como adaptador separado.
+O `FolderImportService` recebe linhas já convertidas, normaliza cabeçalhos,
+valida unidades e aplica dados de pasta e equipe. O `CsvReaderService` é o
+primeiro adaptador de arquivo. Leitores futuros, como XLSX ou uma integração de
+API, poderão produzir o mesmo formato de linhas sem alterar a regra de domínio.

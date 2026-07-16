@@ -67,6 +67,10 @@ import {
     ExecutiveController,
 } from "./controllers/ExecutiveController.js";
 
+import {
+    FolderImportController,
+} from "./controllers/FolderImportController.js";
+
 function createUnitsFromStoredData(
     storedUnits
 ) {
@@ -384,6 +388,21 @@ function bootstrap() {
         });
 
     executiveController.init();
+
+    const folderImportController =
+        new FolderImportController({
+            rootElement,
+            units,
+            getChannels: () =>
+                AppearanceService.createDisplayChannels(
+                    SALES_CHANNEL_OPTIONS,
+                    projectConfig.appearance
+                ),
+            onUnitsChange:
+                saveUnitsAndRender,
+        });
+
+    folderImportController.init();
 
     console.info(
         `${APP_CONFIG.name} v${APP_CONFIG.version} iniciado com sucesso.`
