@@ -225,13 +225,22 @@ drop policy if exists "projects_select_members" on public.projects;
 create policy "projects_select_members"
     on public.projects for select
     to authenticated
-    using (public.is_project_member(id));
+    using (
+        (select auth.uid()) is not null
+        and (
+            created_by = (select auth.uid())
+            or public.is_project_member(id)
+        )
+    );
 
 drop policy if exists "projects_insert_authenticated" on public.projects;
 create policy "projects_insert_authenticated"
     on public.projects for insert
     to authenticated
-    with check (created_by = (select auth.uid()));
+    with check (
+        (select auth.uid()) is not null
+        and created_by = (select auth.uid())
+    );
 
 drop policy if exists "projects_update_editors" on public.projects;
 create policy "projects_update_editors"

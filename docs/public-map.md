@@ -36,13 +36,13 @@ será adicionada em uma evolução posterior usando o campo `is_active`.
 
 Se a publicação informar que o empreendimento não está sincronizado:
 
-1. execute novamente a migration
-   `supabase/migrations/202607150001_initial_schema.sql` no SQL Editor;
-2. confirme que a execução termina com sucesso, pois ela também cria políticas,
-   permissões e gatilhos depois das tabelas;
+1. execute a migration
+   `supabase/migrations/202607150002_fix_project_bootstrap_rls.sql` no SQL
+   Editor;
+2. confirme que a execução termina com sucesso;
 3. saia e entre novamente na aplicação;
 4. abra a Operação e gere o link outra vez.
 
-A migration atual é idempotente e pode ser reaplicada. Se o Supabase recusar a
+A migration de correção é idempotente e pode ser reaplicada. Se o Supabase recusar a
 sincronização, a interface passa a mostrar também a mensagem original do banco,
 facilitando a identificação da política ou permissão ausente.
