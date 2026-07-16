@@ -157,6 +157,8 @@ export class AppView {
             case APP_MODE.EXECUTIVE:
                 return (
                     ExecutiveView.render({
+                        channels,
+                        statuses,
                         units,
                         projectConfig,
                     })

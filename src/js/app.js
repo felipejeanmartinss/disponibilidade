@@ -63,6 +63,10 @@ import {
     AppearanceController,
 } from "./controllers/AppearanceController.js";
 
+import {
+    ExecutiveController,
+} from "./controllers/ExecutiveController.js";
+
 function createUnitsFromStoredData(
     storedUnits
 ) {
@@ -228,6 +232,7 @@ function bootstrap() {
         );
 
     let operationController = null;
+    let executiveController = null;
 
     const renderApplication =
         () => {
@@ -269,6 +274,7 @@ function bootstrap() {
             });
 
             operationController?.restoreState();
+            executiveController?.restoreState();
         };
 
     const saveAppearanceAndRender =
@@ -370,6 +376,14 @@ function bootstrap() {
         });
 
     operationController.init();
+
+    executiveController =
+        new ExecutiveController({
+            rootElement,
+            units,
+        });
+
+    executiveController.init();
 
     console.info(
         `${APP_CONFIG.name} v${APP_CONFIG.version} iniciado com sucesso.`
