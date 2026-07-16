@@ -27,6 +27,10 @@ de clientes.
 3. Novas publicações do mesmo empreendimento atualizam o snapshot e preservam
    o endereço existente.
 4. A política RLS permite leitura anônima somente quando `is_active = true`.
+5. Depois da primeira publicação, alterações de unidades, estrutura e
+   aparência atualizam automaticamente o snapshot sanitizado.
+6. Links que estiverem abertos recebem essas atualizações pelo Supabase
+   Realtime, sem recarregar a página.
 
 ## Exibição responsiva
 
@@ -55,3 +59,12 @@ Se a publicação informar que o empreendimento não está sincronizado:
 A migration de correção é idempotente e pode ser reaplicada. Se o Supabase recusar a
 sincronização, a interface passa a mostrar também a mensagem original do banco,
 facilitando a identificação da política ou permissão ausente.
+
+## Atualização em tempo real
+
+Execute uma vez no SQL Editor:
+
+`supabase/migrations/202607160001_enable_public_map_realtime.sql`
+
+A migration inclui `public.public_maps` na publicação do Supabase Realtime e
+pode ser executada novamente com segurança.

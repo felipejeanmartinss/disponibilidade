@@ -48,6 +48,44 @@ async function bootstrapPublicMap() {
         view.render(
             publicMap.snapshot
         );
+
+        let refreshQueue =
+            Promise.resolve();
+
+        const unsubscribe =
+            service.subscribe(
+                slug,
+                () => {
+                    refreshQueue =
+                        refreshQueue
+                            .then(async () => {
+                                const updatedMap =
+                                    await service.load(
+                                        slug
+                                    );
+
+                                if (
+                                    updatedMap?.snapshot
+                                ) {
+                                    view.render(
+                                        updatedMap.snapshot
+                                    );
+                                }
+                            })
+                            .catch((error) => {
+                                console.error(
+                                    "Falha ao atualizar o mapa público:",
+                                    error
+                                );
+                            });
+                }
+            );
+
+        window.addEventListener(
+            "beforeunload",
+            unsubscribe,
+            { once: true }
+        );
     } catch (error) {
         console.error(
             "Falha ao carregar o mapa público:",

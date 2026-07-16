@@ -105,6 +105,98 @@ export class PublicMapService {
         return data;
     }
 
+    async syncIfPublished({
+        projectId,
+        snapshot,
+    }) {
+        if (!projectId) {
+            return false;
+        }
+
+        const {
+            data: { session },
+            error: sessionError,
+        } = await this.client.auth.getSession();
+
+        if (sessionError) {
+            throw sessionError;
+        }
+
+        if (!session?.user) {
+            return false;
+        }
+
+        const { data: existingMap, error: selectError } =
+            await this.client
+                .from("public_maps")
+                .select("id")
+                .eq("project_id", projectId)
+                .eq("is_active", true)
+                .order("updated_at", {
+                    ascending: false,
+                })
+                .limit(1)
+                .maybeSingle();
+
+        if (selectError) {
+            throw selectError;
+        }
+
+        if (!existingMap) {
+            return false;
+        }
+
+        const { error } =
+            await this.client
+                .from("public_maps")
+                .update({
+                    snapshot,
+                    published_by:
+                        session.user.id,
+                })
+                .eq("id", existingMap.id);
+
+        if (error) {
+            throw error;
+        }
+
+        return true;
+    }
+
+    subscribe(slug, onChange) {
+        if (
+            !slug ||
+            typeof onChange !== "function"
+        ) {
+            return () => {};
+        }
+
+        const channel =
+            this.client
+                .channel(
+                    `public-map:${slug}`
+                )
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "UPDATE",
+                        schema: "public",
+                        table: "public_maps",
+                        filter:
+                            `slug=eq.${slug}`,
+                    },
+                    () => {
+                        void onChange();
+                    }
+                )
+                .subscribe();
+
+        return () => {
+            void this.client
+                .removeChannel(channel);
+        };
+    }
+
     static createSnapshot({
         projectConfig,
         units,

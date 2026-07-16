@@ -195,7 +195,9 @@ export class PublicMapView {
                 "
                 aria-label="Unidade ${escapeHtml(unit.displayCode)}, ${escapeHtml(status.label)}"
             >
-                ${channelLabel}
+                <div class="public-unit-card__channel-slot">
+                    ${channelLabel}
+                </div>
 
                 <strong class="public-unit-card__number">
                     ${escapeHtml(unit.displayCode)}

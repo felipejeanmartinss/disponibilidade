@@ -463,6 +463,70 @@ async function bootstrap() {
             executiveController?.restoreState();
         };
 
+    const createPublicMapSnapshot =
+        () => {
+            const channels =
+                AppearanceService.createDisplayChannels(
+                    SALES_CHANNEL_OPTIONS,
+                    projectConfig.appearance
+                );
+
+            const statuses =
+                AppearanceService.createDisplayStatuses(
+                    UNIT_STATUS_OPTIONS,
+                    projectConfig.appearance
+                );
+
+            return PublicMapService.createSnapshot({
+                projectConfig,
+                units,
+                channels,
+                statuses,
+            });
+        };
+
+    let publicMapSyncTimer = null;
+    let publicMapSyncQueue =
+        Promise.resolve();
+
+    const schedulePublicMapSync =
+        () => {
+            const projectId =
+                persistenceService.getProjectId();
+
+            if (!projectId) {
+                return;
+            }
+
+            window.clearTimeout(
+                publicMapSyncTimer
+            );
+
+            publicMapSyncTimer =
+                window.setTimeout(
+                    () => {
+                        publicMapSyncQueue =
+                            publicMapSyncQueue
+                                .catch(() => {})
+                                .then(() =>
+                                    publicMapService
+                                        .syncIfPublished({
+                                            projectId,
+                                            snapshot:
+                                                createPublicMapSnapshot(),
+                                        })
+                                )
+                                .catch((error) => {
+                                    console.error(
+                                        "Falha ao atualizar automaticamente o mapa público:",
+                                        error
+                                    );
+                                });
+                    },
+                    250
+                );
+        };
+
     const saveAppearanceAndRender =
         () => {
             ProjectConfigService.save(
@@ -474,6 +538,7 @@ async function bootstrap() {
                     projectConfig
                 );
 
+            schedulePublicMapSync();
             renderApplication();
         };
 
@@ -486,6 +551,7 @@ async function bootstrap() {
             void persistenceService
                 .saveUnits(units);
 
+            schedulePublicMapSync();
             renderApplication();
         };
 
@@ -517,6 +583,7 @@ async function bootstrap() {
             void persistenceService
                 .saveUnits(units);
 
+            schedulePublicMapSync();
             renderApplication();
         };
 
@@ -615,31 +682,12 @@ async function bootstrap() {
                 async () => {
                     await ensurePersistenceReady();
 
-                    const channels =
-                        AppearanceService.createDisplayChannels(
-                            SALES_CHANNEL_OPTIONS,
-                            projectConfig.appearance
-                        );
-
-                    const statuses =
-                        AppearanceService.createDisplayStatuses(
-                            UNIT_STATUS_OPTIONS,
-                            projectConfig.appearance
-                        );
-
-                    const snapshot =
-                        PublicMapService.createSnapshot({
-                            projectConfig,
-                            units,
-                            channels,
-                            statuses,
-                        });
-
                     const slug =
                         await publicMapService.publish({
                             projectId:
                                 persistenceService.getProjectId(),
-                            snapshot,
+                            snapshot:
+                                createPublicMapSnapshot(),
                         });
 
                     return PublicMapService.createPublicUrl(
