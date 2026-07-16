@@ -59,8 +59,34 @@ export class OperationView {
                         <button type="button" data-operation-fullscreen>
                             Tela cheia
                         </button>
+                        <button type="button" data-operation-publish-public>
+                            Gerar link público
+                        </button>
                     </div>
                 </header>
+
+                <div class="public-map-share" data-public-map-share hidden>
+                    <label for="public-map-url">
+                        Link público sanitizado
+                    </label>
+                    <input
+                        id="public-map-url"
+                        type="url"
+                        readonly
+                        data-public-map-url
+                    >
+                    <button type="button" data-public-map-copy>
+                        Copiar link
+                    </button>
+                    <a
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-public-map-open
+                    >
+                        Abrir
+                    </a>
+                </div>
 
                 <div aria-label="Mapa comercial das unidades">
                     ${matrices}

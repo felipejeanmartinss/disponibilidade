@@ -1,6 +1,11 @@
 export class OperationController {
-    constructor({ rootElement }) {
+    constructor({
+        rootElement,
+        onPublishPublicMap = null,
+    }) {
         this.rootElement = rootElement;
+        this.onPublishPublicMap =
+            onPublishPublicMap;
         this.zoom = 1;
         this.filters = {
             block: "",
@@ -23,7 +28,7 @@ export class OperationController {
         this.timerId = window.setInterval(() => this.updateTimers(), 30000);
     }
 
-    handleClick(event) {
+    async handleClick(event) {
         if (event.target.closest("[data-operation-zoom-in]")) {
             this.setZoom(this.zoom + 0.1);
             return;
@@ -36,6 +41,27 @@ export class OperationController {
 
         if (event.target.closest("[data-operation-fullscreen]")) {
             this.toggleFullscreen();
+            return;
+        }
+
+        const publishButton =
+            event.target.closest(
+                "[data-operation-publish-public]"
+            );
+
+        if (publishButton) {
+            await this.publishPublicMap(
+                publishButton
+            );
+            return;
+        }
+
+        if (
+            event.target.closest(
+                "[data-public-map-copy]"
+            )
+        ) {
+            await this.copyPublicMapUrl();
         }
     }
 
@@ -155,6 +181,91 @@ export class OperationController {
         } catch (error) {
             console.warn("Não foi possível ativar a tela cheia nativa:", error);
             workspace.classList.toggle("is-fullscreen-fallback");
+        }
+    }
+
+    async publishPublicMap(button) {
+        if (
+            typeof this.onPublishPublicMap !==
+            "function"
+        ) {
+            return;
+        }
+
+        const originalLabel =
+            button.textContent;
+
+        button.disabled = true;
+        button.textContent =
+            "Publicando...";
+
+        try {
+            const url =
+                await this.onPublishPublicMap();
+
+            this.showPublicMapUrl(url);
+            button.textContent =
+                "Atualizar link público";
+        } catch (error) {
+            console.error(
+                "Falha ao publicar o mapa:",
+                error
+            );
+
+            window.alert(
+                error?.message ||
+                "Não foi possível publicar o mapa."
+            );
+
+            button.textContent =
+                originalLabel;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    showPublicMapUrl(url) {
+        const share =
+            this.rootElement.querySelector(
+                "[data-public-map-share]"
+            );
+
+        const input =
+            share?.querySelector(
+                "[data-public-map-url]"
+            );
+
+        const openLink =
+            share?.querySelector(
+                "[data-public-map-open]"
+            );
+
+        if (!share || !input || !openLink) {
+            return;
+        }
+
+        input.value = url;
+        openLink.href = url;
+        share.hidden = false;
+    }
+
+    async copyPublicMapUrl() {
+        const input =
+            this.rootElement.querySelector(
+                "[data-public-map-url]"
+            );
+
+        if (!input?.value) {
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(
+                input.value
+            );
+        } catch {
+            input.select();
+            document.execCommand("copy");
         }
     }
 

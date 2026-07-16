@@ -43,7 +43,8 @@
 - perfis e permissões;
 - trilha de auditoria;
 - migração do LocalStorage;
-- publicação de snapshot sanitizado da matriz em link revogável;
+- publicação de snapshot sanitizado da matriz em link público;
+- revogação e histórico de links públicos;
 
 ## Fase 5 — Gestão
 

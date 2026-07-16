@@ -360,6 +360,10 @@ export class SupabasePersistenceService {
         return this.writeQueue;
     }
 
+    getProjectId() {
+        return this.projectId;
+    }
+
     storeProjectId(projectId) {
         localStorage.setItem(
             PROJECT_ID_KEY,

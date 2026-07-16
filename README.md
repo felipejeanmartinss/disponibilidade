@@ -32,7 +32,8 @@ src/
 Consulte [a arquitetura](docs/architecture.md), [o roadmap](docs/roadmap.md),
 [a configuração do Supabase](docs/supabase-setup.md),
 [a configuração do login com senha](docs/password-auth-setup.md) e
-[a estratégia de persistência](docs/supabase-persistence.md).
+[a estratégia de persistência](docs/supabase-persistence.md). A publicação
+sanitizada está descrita em [link público do mapa](docs/public-map.md).
 
 ## Execução local
 

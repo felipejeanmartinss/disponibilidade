@@ -15,13 +15,9 @@ somente hashes protegidos das senhas dentro do schema reservado `auth`.
 
 ## 2. Definir a política de senha
 
-Em **Authentication > Settings**, configure:
-
-- mínimo de 10 caracteres;
-- pelo menos uma letra minúscula;
-- pelo menos uma letra maiúscula;
-- pelo menos um número;
-- pelo menos um símbolo, quando possível.
+O formulário aceita o mínimo de 6 caracteres configurado atualmente no
+Supabase. Para uso em produção, recomenda-se elevar a exigência para 10 ou mais
+caracteres e, quando possível, exigir maiúscula, minúscula, número e símbolo.
 
 Oriente os usuários a utilizar um gerenciador de senhas e a não reutilizar
 credenciais de outros sistemas.

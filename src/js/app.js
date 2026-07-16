@@ -56,6 +56,10 @@ import {
 } from "./services/AuthService.js";
 
 import {
+    PublicMapService,
+} from "./services/PublicMapService.js";
+
+import {
     UnitFactory,
 } from "./factories/UnitFactory.js";
 
@@ -338,6 +342,9 @@ async function bootstrap() {
     const persistenceService =
         new SupabasePersistenceService();
 
+    const publicMapService =
+        new PublicMapService();
+
     try {
         const remoteSnapshot =
             await persistenceService.initialize({
@@ -568,6 +575,40 @@ async function bootstrap() {
     operationController =
         new OperationController({
             rootElement,
+
+            onPublishPublicMap:
+                async () => {
+                    const channels =
+                        AppearanceService.createDisplayChannels(
+                            SALES_CHANNEL_OPTIONS,
+                            projectConfig.appearance
+                        );
+
+                    const statuses =
+                        AppearanceService.createDisplayStatuses(
+                            UNIT_STATUS_OPTIONS,
+                            projectConfig.appearance
+                        );
+
+                    const snapshot =
+                        PublicMapService.createSnapshot({
+                            projectConfig,
+                            units,
+                            channels,
+                            statuses,
+                        });
+
+                    const slug =
+                        await publicMapService.publish({
+                            projectId:
+                                persistenceService.getProjectId(),
+                            snapshot,
+                        });
+
+                    return PublicMapService.createPublicUrl(
+                        slug
+                    );
+                },
         });
 
     operationController.init();
