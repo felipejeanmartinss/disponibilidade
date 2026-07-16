@@ -8,7 +8,7 @@ index.html
   → ProjectConfig + UnitFactory
   → AppView
   → Controllers
-  → LocalStorageService
+  → LocalStorageService / Supabase
 ```
 
 O `ProjectConfig` é a fonte da geometria do empreendimento. A `UnitFactory` transforma essa configuração em unidades operacionais. Dados comerciais previamente salvos são reaplicados pelo `id` estável da unidade.
@@ -34,7 +34,10 @@ Uma unidade contém:
 
 ## Persistência
 
-O `LocalStorageService` mantém dados operacionais e o `ProjectConfigService` mantém a geometria. A próxima camada de persistência será um repositório abstrato, permitindo trocar LocalStorage por Firebase sem alterar Views ou Models.
+O `LocalStorageService` mantém os dados operacionais durante a transição. O
+`SupabaseClientService` inicializa a conexão remota e a migration versionada cria
+o schema PostgreSQL com RLS. A próxima etapa adicionará repositórios para migrar
+LocalStorage sem alterar Views ou Models.
 
 ## Importação
 

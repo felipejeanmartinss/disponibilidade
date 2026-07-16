@@ -35,14 +35,14 @@
 - tipos: unidade tipo, garden, cobertura linear e cobertura dúplex;
 - unificações horizontais e verticais.
 
-## Fase 4 — Firebase e segurança
+## Fase 4 — Supabase e segurança
 
 - interface de repositório de dados;
-- Firestore;
-- autenticação Microsoft corporativa via Firebase Authentication;
+- PostgreSQL e políticas RLS;
+- autenticação Microsoft corporativa via Supabase Auth;
 - perfis e permissões;
 - trilha de auditoria;
-- migração do LocalStorage.
+- migração do LocalStorage;
 - publicação de snapshot sanitizado da matriz em link revogável;
 
 ## Fase 5 — Gestão

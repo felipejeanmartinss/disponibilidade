@@ -36,6 +36,10 @@ import {
 } from "./services/AppearanceService.js";
 
 import {
+    SupabaseClientService,
+} from "./services/SupabaseClientService.js";
+
+import {
     UnitFactory,
 } from "./factories/UnitFactory.js";
 
@@ -210,6 +214,15 @@ function bootstrap() {
         throw new Error(
             'O elemento principal com id "app" não foi encontrado.'
         );
+    }
+
+    if (SupabaseClientService.isConfigured()) {
+        try {
+            SupabaseClientService.getClient();
+            console.info("Cliente Supabase inicializado.");
+        } catch (error) {
+            console.warn("Supabase indisponível; mantendo persistência local.", error);
+        }
     }
 
     const defaultProjectConfig =

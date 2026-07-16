@@ -10,6 +10,7 @@ Aplicação web para configurar empreendimentos imobiliários e acompanhar a pos
 - modal comercial com equipe, pasta, observações e fila de condicionais;
 - catálogo CSV de clientes e preenchimento automático pelo número da pasta;
 - persistência local no navegador;
+- fundação Supabase com schema versionado e políticas RLS;
 - indicadores visuais por status e canal de vendas.
 
 ## Arquitetura
@@ -27,7 +28,8 @@ src/
     └── views/        Renderização da interface
 ```
 
-Consulte [a arquitetura](docs/architecture.md) e [o roadmap](docs/roadmap.md).
+Consulte [a arquitetura](docs/architecture.md), [o roadmap](docs/roadmap.md) e
+[a configuração do Supabase](docs/supabase-setup.md).
 
 ## Execução local
 
