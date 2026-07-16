@@ -68,7 +68,7 @@ export class AuthView {
                                 name="password"
                                 type="password"
                                 autocomplete="current-password"
-                                minlength="10"
+                                minlength="6"
                                 required
                             >
                         </div>
