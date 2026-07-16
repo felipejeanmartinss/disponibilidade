@@ -144,6 +144,11 @@ export function createDefaultProjectConfig() {
             },
         ],
 
+        publicMapSettings: {
+            pageCount: 1,
+            rotationSeconds: 15,
+        },
+
         appearance: {
             channelIndicatorSize:
                 16,

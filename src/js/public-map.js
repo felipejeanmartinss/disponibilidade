@@ -6,6 +6,106 @@ import {
     PublicMapView,
 } from "./views/PublicMapView.js";
 
+function startPageRotation(
+    rootElement
+) {
+    const map =
+        rootElement.querySelector(
+            "[data-public-map]"
+        );
+
+    const pages =
+        Array.from(
+            rootElement.querySelectorAll(
+                "[data-public-page]"
+            )
+        );
+
+    const indicator =
+        rootElement.querySelector(
+            "[data-public-page-indicator]"
+        );
+
+    const countdown =
+        rootElement.querySelector(
+            "[data-public-page-countdown]"
+        );
+
+    const rotationSeconds =
+        Math.max(
+            3,
+            Number(
+                map?.dataset
+                    .rotationSeconds ?? 15
+            ) || 15
+        );
+
+    let activePage = 0;
+    let remainingSeconds =
+        rotationSeconds;
+
+    const updateControls =
+        () => {
+            pages.forEach(
+                (page, index) => {
+                    const isActive =
+                        index === activePage;
+
+                    page.hidden =
+                        !isActive;
+
+                    page.setAttribute(
+                        "aria-hidden",
+                        String(!isActive)
+                    );
+                }
+            );
+
+            if (indicator) {
+                indicator.textContent =
+                    `Página ${activePage + 1} de ${pages.length}`;
+            }
+
+            if (countdown) {
+                countdown.textContent =
+                    pages.length > 1
+                        ? `${remainingSeconds}s`
+                        : "";
+            }
+        };
+
+    updateControls();
+
+    if (pages.length <= 1) {
+        return () => {};
+    }
+
+    const timerId =
+        window.setInterval(
+            () => {
+                remainingSeconds -= 1;
+
+                if (remainingSeconds <= 0) {
+                    activePage =
+                        (activePage + 1) %
+                        pages.length;
+
+                    remainingSeconds =
+                        rotationSeconds;
+                }
+
+                updateControls();
+            },
+            1000
+        );
+
+    return () => {
+        window.clearInterval(
+            timerId
+        );
+    };
+}
+
 async function bootstrapPublicMap() {
     const rootElement =
         document.getElementById(
@@ -49,6 +149,11 @@ async function bootstrapPublicMap() {
             publicMap.snapshot
         );
 
+        let stopPageRotation =
+            startPageRotation(
+                rootElement
+            );
+
         let lastUpdatedAt =
             publicMap.updated_at;
 
@@ -81,9 +186,16 @@ async function bootstrapPublicMap() {
                                 y: window.scrollY,
                             };
 
+                            stopPageRotation();
+
                             view.render(
                                 updatedMap.snapshot
                             );
+
+                            stopPageRotation =
+                                startPageRotation(
+                                    rootElement
+                                );
 
                             window.scrollTo(
                                 scrollPosition.x,
@@ -119,6 +231,7 @@ async function bootstrapPublicMap() {
                     pollingId
                 );
 
+                stopPageRotation();
                 unsubscribe();
             },
             { once: true }

@@ -10,6 +10,7 @@ de clientes.
 - status, nome e cores do status;
 - etiqueta curta e cor do canal;
 - células vazias e unificações necessárias para preservar a matriz.
+- quantidade de páginas e tempo de alternância definidos na Configuração.
 
 ## Dados que nunca entram no snapshot
 
@@ -33,6 +34,8 @@ de clientes.
    Realtime, sem recarregar a página.
 7. Como contingência, a página também verifica uma nova versão do snapshot a
    cada cinco segundos, caso o canal Realtime esteja indisponível.
+8. Quando houver mais de uma página, os pavimentos serão divididos em faixas
+   contínuas e alternados automaticamente conforme o tempo configurado.
 
 ## Exibição responsiva
 

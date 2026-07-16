@@ -68,6 +68,70 @@ export class ConfigurationView {
                     </button>
                 </form>
 
+                <details class="public-map-settings" open>
+                    <summary class="public-map-settings__summary">
+                        Exibição do link público
+                    </summary>
+
+                    <form
+                        class="public-map-settings__form"
+                        data-public-map-settings-form
+                    >
+                        <div class="form-field">
+                            <label
+                                class="form-label"
+                                for="public-map-page-count"
+                            >
+                                Número de páginas
+                            </label>
+
+                            <input
+                                class="form-control"
+                                id="public-map-page-count"
+                                name="pageCount"
+                                type="number"
+                                min="1"
+                                max="${Math.min(20, block?.floors ?? 1)}"
+                                value="${projectConfig.publicMapSettings.pageCount}"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-field">
+                            <label
+                                class="form-label"
+                                for="public-map-rotation-seconds"
+                            >
+                                Tempo por página (segundos)
+                            </label>
+
+                            <input
+                                class="form-control"
+                                id="public-map-rotation-seconds"
+                                name="rotationSeconds"
+                                type="number"
+                                min="3"
+                                max="3600"
+                                value="${projectConfig.publicMapSettings.rotationSeconds}"
+                                required
+                            >
+                        </div>
+
+                        <p class="public-map-settings__help">
+                            Os pavimentos serão distribuídos do mais alto para
+                            o mais baixo. O link alternará as páginas
+                            automaticamente.
+                        </p>
+
+                        <button
+                            class="modal-button modal-button--primary"
+                            type="submit"
+                        >
+                            Salvar exibição
+                        </button>
+                    </form>
+                </details>
+
                 ${AppearanceView.render({
                     channels,
                     statuses,

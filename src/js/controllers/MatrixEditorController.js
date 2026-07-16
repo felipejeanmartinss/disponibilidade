@@ -76,7 +76,20 @@ export class MatrixEditorController {
     }
 
     handleSubmit(event) {
-        if (!event.target.matches("[data-project-structure-form]")) {
+        const isStructureForm =
+            event.target.matches(
+                "[data-project-structure-form]"
+            );
+
+        const isPublicMapSettingsForm =
+            event.target.matches(
+                "[data-public-map-settings-form]"
+            );
+
+        if (
+            !isStructureForm &&
+            !isPublicMapSettingsForm
+        ) {
             return;
         }
 
@@ -84,10 +97,23 @@ export class MatrixEditorController {
         const data = new FormData(event.target);
 
         try {
-            ProjectStructureService.updatePrimaryBlock(
-                this.projectConfig,
-                Object.fromEntries(data.entries())
-            );
+            const values =
+                Object.fromEntries(
+                    data.entries()
+                );
+
+            if (isStructureForm) {
+                ProjectStructureService.updatePrimaryBlock(
+                    this.projectConfig,
+                    values
+                );
+            } else {
+                ProjectStructureService.updatePublicMapSettings(
+                    this.projectConfig,
+                    values
+                );
+            }
+
             this.finishMatrixChange();
         } catch (error) {
             this.showError(error.message);

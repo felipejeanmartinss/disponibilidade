@@ -17,6 +17,87 @@ body {
     padding: clamp(4px, 1vw, var(--spacing-6));
 }
 
+.public-map__header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+
+    padding: clamp(8px, 1vw, var(--spacing-4));
+
+    background: rgb(255 255 255 / 96%);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(8px);
+}
+
+.public-map__legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(6px, 0.8vw, var(--spacing-4));
+}
+
+.public-map__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+
+    color: var(--color-gray-600);
+    font-size: clamp(0.65rem, 1vw, var(--font-size-sm));
+    white-space: nowrap;
+}
+
+.public-map__legend-sample {
+    width: clamp(10px, 1.2vw, 16px);
+    height: clamp(10px, 1.2vw, 16px);
+    flex: 0 0 auto;
+    border: 1px solid rgb(15 23 42 / 15%);
+    border-radius: 4px;
+}
+
+.public-map__pagination {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    flex: 0 0 auto;
+
+    color: var(--color-primary-700);
+    font-size: var(--font-size-sm);
+}
+
+.public-map__pagination [data-public-page-countdown] {
+    min-width: 42px;
+    padding: 3px 8px;
+    text-align: center;
+    background: var(--color-primary-50);
+    border-radius: 999px;
+}
+
+.public-map__pages,
+.public-map__page {
+    min-width: 0;
+}
+
+.public-map__page[hidden] {
+    display: none;
+}
+
+.public-matrix__title {
+    margin-bottom: var(--spacing-3);
+    color: var(--color-gray-800);
+    font-size: var(--font-size-base);
+}
+
+.public-matrix__viewport + .public-matrix__title {
+    margin-top: var(--spacing-6);
+}
+
 .public-matrix__viewport {
     min-width: 0;
     overflow-x: hidden;
@@ -150,6 +231,19 @@ body {
 }
 
 @media (max-width: 640px) {
+    .public-map__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .public-map__legend {
+        gap: 5px 10px;
+    }
+
+    .public-map__pagination {
+        align-self: flex-end;
+    }
+
     .public-unit-card {
         padding: 4px 3px;
     }

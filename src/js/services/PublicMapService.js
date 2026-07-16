@@ -204,14 +204,30 @@ export class PublicMapService {
         channels,
     }) {
         return {
-            version: 1,
+            version: 2,
             publishedAt:
                 new Date().toISOString(),
+            display: {
+                pageCount:
+                    Number(
+                        projectConfig
+                            .publicMapSettings
+                            ?.pageCount ?? 1
+                    ),
+                rotationSeconds:
+                    Number(
+                        projectConfig
+                            .publicMapSettings
+                            ?.rotationSeconds ?? 15
+                    ),
+            },
             blocks:
                 projectConfig.blocks.map(
                     (block) => ({
                         id:
                             String(block.id),
+                        name:
+                            String(block.name),
                         floors:
                             Number(block.floors),
                         columns:

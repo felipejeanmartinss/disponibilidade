@@ -52,6 +52,61 @@ export class ProjectStructureService {
         projectConfig.update({
             projectName,
             blocks: [updatedBlock, ...projectConfig.blocks.slice(1)],
+            publicMapSettings: {
+                ...projectConfig.publicMapSettings,
+                pageCount:
+                    Math.min(
+                        projectConfig
+                            .publicMapSettings
+                            .pageCount,
+                        Math.min(
+                            20,
+                            nextFloors
+                        )
+                    ),
+            },
+        });
+
+        return projectConfig;
+    }
+
+    static updatePublicMapSettings(
+        projectConfig,
+        {
+            pageCount,
+            rotationSeconds,
+        }
+    ) {
+        const maximumFloors =
+            Math.max(
+                1,
+                ...projectConfig.blocks.map(
+                    (block) =>
+                        block.floors
+                )
+            );
+
+        const nextPageCount =
+            ProjectStructureService.toInteger(
+                pageCount,
+                1,
+                Math.min(20, maximumFloors)
+            );
+
+        const nextRotationSeconds =
+            ProjectStructureService.toInteger(
+                rotationSeconds,
+                3,
+                3600
+            );
+
+        projectConfig.update({
+            publicMapSettings: {
+                pageCount:
+                    nextPageCount,
+                rotationSeconds:
+                    nextRotationSeconds,
+            },
         });
 
         return projectConfig;

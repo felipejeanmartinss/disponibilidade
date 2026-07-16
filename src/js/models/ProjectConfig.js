@@ -66,6 +66,12 @@ const DEFAULT_APPEARANCE =
         customChannels: [],
     });
 
+const DEFAULT_PUBLIC_MAP_SETTINGS =
+    Object.freeze({
+        pageCount: 1,
+        rotationSeconds: 15,
+    });
+
 export class ProjectConfig {
     constructor({
         id = "default-project",
@@ -74,6 +80,8 @@ export class ProjectConfig {
         blocks = [],
         appearance =
             DEFAULT_APPEARANCE,
+        publicMapSettings =
+            DEFAULT_PUBLIC_MAP_SETTINGS,
     } = {}) {
         this.id =
             this.normalizeText(
@@ -95,6 +103,11 @@ export class ProjectConfig {
         this.appearance =
             this.normalizeAppearance(
                 appearance
+            );
+
+        this.publicMapSettings =
+            this.normalizePublicMapSettings(
+                publicMapSettings
             );
     }
 
@@ -360,6 +373,30 @@ export class ProjectConfig {
         };
     }
 
+    normalizePublicMapSettings(
+        settings
+    ) {
+        return {
+            pageCount:
+                this.normalizePositiveInteger(
+                    settings?.pageCount,
+                    DEFAULT_PUBLIC_MAP_SETTINGS
+                        .pageCount,
+                    1,
+                    20
+                ),
+
+            rotationSeconds:
+                this.normalizePositiveInteger(
+                    settings?.rotationSeconds,
+                    DEFAULT_PUBLIC_MAP_SETTINGS
+                        .rotationSeconds,
+                    3,
+                    3600
+                ),
+        };
+    }
+
     getTotalUnits() {
         return this.blocks.reduce(
             (total, block) =>
@@ -376,6 +413,8 @@ export class ProjectConfig {
         blocks = this.blocks,
         appearance =
             this.appearance,
+        publicMapSettings =
+            this.publicMapSettings,
     } = {}) {
         this.projectName =
             this.normalizeText(
@@ -393,6 +432,11 @@ export class ProjectConfig {
                 appearance
             );
 
+        this.publicMapSettings =
+            this.normalizePublicMapSettings(
+                publicMapSettings
+            );
+
         return this;
     }
 
@@ -408,6 +452,16 @@ export class ProjectConfig {
                     (block) =>
                         block.toJSON()
                 ),
+
+            publicMapSettings: {
+                pageCount:
+                    this.publicMapSettings
+                        .pageCount,
+
+                rotationSeconds:
+                    this.publicMapSettings
+                        .rotationSeconds,
+            },
 
             appearance: {
                 channelIndicatorSize:

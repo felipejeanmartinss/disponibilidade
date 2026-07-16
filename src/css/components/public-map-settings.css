@@ -1,0 +1,52 @@
+.public-map-settings {
+    margin-block: var(--spacing-5);
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.public-map-settings__summary {
+    padding: var(--spacing-4) var(--spacing-5);
+    color: var(--color-gray-800);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+}
+
+.public-map-settings__form {
+    display: grid;
+    grid-template-columns:
+        minmax(180px, 240px)
+        minmax(220px, 280px)
+        minmax(240px, 1fr)
+        auto;
+    align-items: end;
+    gap: var(--spacing-4);
+    padding: 0 var(--spacing-5) var(--spacing-5);
+}
+
+.public-map-settings__help {
+    align-self: center;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+@media (max-width: 900px) {
+    .public-map-settings__form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .public-map-settings__help {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 560px) {
+    .public-map-settings__form {
+        grid-template-columns: 1fr;
+    }
+
+    .public-map-settings__help {
+        grid-column: auto;
+    }
+}
