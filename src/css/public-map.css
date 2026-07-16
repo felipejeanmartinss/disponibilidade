@@ -33,7 +33,7 @@ body {
         );
     grid-auto-rows:
         max(
-            48px,
+            64px,
             var(--public-fit-row)
         );
     gap: clamp(2px, 0.4vw, var(--spacing-3));
@@ -89,7 +89,7 @@ body {
     max-width: 100%;
     overflow: hidden;
     color: inherit;
-    font-size: clamp(0.68rem, 2.15vw, 1.65rem);
+    font-size: clamp(0.8rem, 2.15vw, 1.65rem);
     line-height: 1;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -114,7 +114,7 @@ body {
     justify-content: flex-end;
     width: 100%;
     min-width: 0;
-    min-height: clamp(8px, 1vw, 16px);
+    min-height: clamp(10px, 1vw, 16px);
 }
 
 .public-unit-card__channel {
@@ -150,7 +150,11 @@ body {
 }
 
 @media (max-width: 640px) {
+    .public-unit-card {
+        padding: 4px 3px;
+    }
+
     .public-unit-card__channel {
-        font-size: 0.4rem;
+        font-size: 0.44rem;
     }
 }

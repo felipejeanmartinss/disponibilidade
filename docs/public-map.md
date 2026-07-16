@@ -31,6 +31,8 @@ de clientes.
    aparência atualizam automaticamente o snapshot sanitizado.
 6. Links que estiverem abertos recebem essas atualizações pelo Supabase
    Realtime, sem recarregar a página.
+7. Como contingência, a página também verifica uma nova versão do snapshot a
+   cada cinco segundos, caso o canal Realtime esteja indisponível.
 
 ## Exibição responsiva
 

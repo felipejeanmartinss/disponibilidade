@@ -49,41 +49,78 @@ async function bootstrapPublicMap() {
             publicMap.snapshot
         );
 
+        let lastUpdatedAt =
+            publicMap.updated_at;
+
         let refreshQueue =
             Promise.resolve();
+
+        const refreshMap =
+            () => {
+                refreshQueue =
+                    refreshQueue
+                        .then(async () => {
+                            const updatedMap =
+                                await service.load(
+                                    slug
+                                );
+
+                            if (
+                                !updatedMap?.snapshot ||
+                                updatedMap.updated_at ===
+                                    lastUpdatedAt
+                            ) {
+                                return;
+                            }
+
+                            lastUpdatedAt =
+                                updatedMap.updated_at;
+
+                            const scrollPosition = {
+                                x: window.scrollX,
+                                y: window.scrollY,
+                            };
+
+                            view.render(
+                                updatedMap.snapshot
+                            );
+
+                            window.scrollTo(
+                                scrollPosition.x,
+                                scrollPosition.y
+                            );
+                        })
+                        .catch((error) => {
+                            console.error(
+                                "Falha ao atualizar o mapa público:",
+                                error
+                            );
+                        });
+
+                return refreshQueue;
+            };
 
         const unsubscribe =
             service.subscribe(
                 slug,
-                () => {
-                    refreshQueue =
-                        refreshQueue
-                            .then(async () => {
-                                const updatedMap =
-                                    await service.load(
-                                        slug
-                                    );
+                refreshMap
+            );
 
-                                if (
-                                    updatedMap?.snapshot
-                                ) {
-                                    view.render(
-                                        updatedMap.snapshot
-                                    );
-                                }
-                            })
-                            .catch((error) => {
-                                console.error(
-                                    "Falha ao atualizar o mapa público:",
-                                    error
-                                );
-                            });
-                }
+        const pollingId =
+            window.setInterval(
+                refreshMap,
+                5000
             );
 
         window.addEventListener(
             "beforeunload",
-            unsubscribe,
+            () => {
+                window.clearInterval(
+                    pollingId
+                );
+
+                unsubscribe();
+            },
             { once: true }
         );
     } catch (error) {
