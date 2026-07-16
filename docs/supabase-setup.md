@@ -16,7 +16,8 @@ repositório a senha do banco, `service_role`, secret key ou segredo do Azure.
 3. Crie uma nova consulta.
 4. Copie todo o conteúdo de
    `supabase/migrations/202607150001_initial_schema.sql`.
-5. Execute a consulta uma única vez.
+5. Execute a consulta. O arquivo pode ser executado novamente com segurança se
+   for necessário corrigir uma tentativa anterior.
 6. Em **Table Editor**, confirme as tabelas `profiles`, `projects`,
    `project_members`, `units`, `folder_catalog` e `public_maps`.
 

@@ -208,111 +208,132 @@ alter table public.units enable row level security;
 alter table public.folder_catalog enable row level security;
 alter table public.public_maps enable row level security;
 
+drop policy if exists "profiles_select_authenticated" on public.profiles;
 create policy "profiles_select_authenticated"
     on public.profiles for select
     to authenticated
     using (true);
 
+drop policy if exists "profiles_update_own" on public.profiles;
 create policy "profiles_update_own"
     on public.profiles for update
     to authenticated
     using (id = (select auth.uid()))
     with check (id = (select auth.uid()));
 
+drop policy if exists "projects_select_members" on public.projects;
 create policy "projects_select_members"
     on public.projects for select
     to authenticated
     using (public.is_project_member(id));
 
+drop policy if exists "projects_insert_authenticated" on public.projects;
 create policy "projects_insert_authenticated"
     on public.projects for insert
     to authenticated
     with check (created_by = (select auth.uid()));
 
+drop policy if exists "projects_update_editors" on public.projects;
 create policy "projects_update_editors"
     on public.projects for update
     to authenticated
     using (public.can_edit_project(id))
     with check (public.can_edit_project(id));
 
+drop policy if exists "projects_delete_admins" on public.projects;
 create policy "projects_delete_admins"
     on public.projects for delete
     to authenticated
     using (public.is_project_admin(id));
 
+drop policy if exists "members_select_project_members" on public.project_members;
 create policy "members_select_project_members"
     on public.project_members for select
     to authenticated
     using (public.is_project_member(project_id));
 
+drop policy if exists "members_insert_admins" on public.project_members;
 create policy "members_insert_admins"
     on public.project_members for insert
     to authenticated
     with check (public.is_project_admin(project_id));
 
+drop policy if exists "members_update_admins" on public.project_members;
 create policy "members_update_admins"
     on public.project_members for update
     to authenticated
     using (public.is_project_admin(project_id))
     with check (public.is_project_admin(project_id));
 
+drop policy if exists "members_delete_admins" on public.project_members;
 create policy "members_delete_admins"
     on public.project_members for delete
     to authenticated
     using (public.is_project_admin(project_id));
 
+drop policy if exists "units_select_members" on public.units;
 create policy "units_select_members"
     on public.units for select
     to authenticated
     using (public.is_project_member(project_id));
 
+drop policy if exists "units_insert_editors" on public.units;
 create policy "units_insert_editors"
     on public.units for insert
     to authenticated
     with check (public.can_edit_project(project_id));
 
+drop policy if exists "units_update_editors" on public.units;
 create policy "units_update_editors"
     on public.units for update
     to authenticated
     using (public.can_edit_project(project_id))
     with check (public.can_edit_project(project_id));
 
+drop policy if exists "units_delete_editors" on public.units;
 create policy "units_delete_editors"
     on public.units for delete
     to authenticated
     using (public.can_edit_project(project_id));
 
+drop policy if exists "folder_catalog_select_members" on public.folder_catalog;
 create policy "folder_catalog_select_members"
     on public.folder_catalog for select
     to authenticated
     using (public.is_project_member(project_id));
 
+drop policy if exists "folder_catalog_insert_editors" on public.folder_catalog;
 create policy "folder_catalog_insert_editors"
     on public.folder_catalog for insert
     to authenticated
     with check (public.can_edit_project(project_id));
 
+drop policy if exists "folder_catalog_update_editors" on public.folder_catalog;
 create policy "folder_catalog_update_editors"
     on public.folder_catalog for update
     to authenticated
     using (public.can_edit_project(project_id))
     with check (public.can_edit_project(project_id));
 
+drop policy if exists "folder_catalog_delete_editors" on public.folder_catalog;
 create policy "folder_catalog_delete_editors"
     on public.folder_catalog for delete
     to authenticated
     using (public.can_edit_project(project_id));
 
+drop policy if exists "public_maps_select_active" on public.public_maps;
 create policy "public_maps_select_active"
     on public.public_maps for select
     to anon, authenticated
     using (is_active = true);
 
+drop policy if exists "public_maps_select_editors" on public.public_maps;
 create policy "public_maps_select_editors"
     on public.public_maps for select
     to authenticated
     using (public.can_edit_project(project_id));
 
+drop policy if exists "public_maps_insert_editors" on public.public_maps;
 create policy "public_maps_insert_editors"
     on public.public_maps for insert
     to authenticated
@@ -321,12 +342,14 @@ create policy "public_maps_insert_editors"
         and published_by = (select auth.uid())
     );
 
+drop policy if exists "public_maps_update_editors" on public.public_maps;
 create policy "public_maps_update_editors"
     on public.public_maps for update
     to authenticated
     using (public.can_edit_project(project_id))
     with check (public.can_edit_project(project_id));
 
+drop policy if exists "public_maps_delete_editors" on public.public_maps;
 create policy "public_maps_delete_editors"
     on public.public_maps for delete
     to authenticated
