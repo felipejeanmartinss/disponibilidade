@@ -12,6 +12,11 @@ import {
     escapeHtml,
 } from "../utils/html.js";
 
+import {
+    FOLDER_TYPE_OPTIONS,
+    getFolderTypeLabel,
+} from "../config/folderTypes.js";
+
 export class UnitModalView {
     static renderOptions(options) {
         return options
@@ -93,8 +98,14 @@ export class UnitModalView {
                             <section class="modal__section">
                                 <h3 class="modal__section-title">Pasta</h3>
                                 <div class="form-grid form-grid--three">
-                                    ${UnitModalView.renderInput("folder-number", "folderNumber", "Nº")}
-                                    ${UnitModalView.renderInput("folder-type", "folderType", "Tipo")}
+                                    <div class="form-field">
+                                        <label class="form-label" for="folder-number">Nº</label>
+                                        <input class="form-control" id="folder-number"
+                                            name="folderNumber" type="text">
+                                        <small class="folder-lookup-message"
+                                            data-folder-lookup-message="unit"></small>
+                                    </div>
+                                    ${UnitModalView.renderFolderTypeSelect("folder-type", "folderType")}
                                     ${UnitModalView.renderInput("folder-client-name", "folderClientName", "Nome do cliente")}
                                 </div>
                             </section>
@@ -115,8 +126,20 @@ export class UnitModalView {
                                 <div class="conditional-editor">
                                     <div class="form-grid form-grid--three">
                                         ${UnitModalView.renderInput("conditional-name", "conditionalName", "Nome do cliente")}
-                                        ${UnitModalView.renderInput("conditional-folder-number", "conditionalFolderNumber", "Nº da pasta")}
-                                        ${UnitModalView.renderInput("conditional-folder-type", "conditionalFolderType", "Tipo da pasta")}
+                                        <div class="form-field">
+                                            <label class="form-label" for="conditional-folder-number">
+                                                Nº da pasta
+                                            </label>
+                                            <input class="form-control" id="conditional-folder-number"
+                                                name="conditionalFolderNumber" type="text">
+                                            <small class="folder-lookup-message"
+                                                data-folder-lookup-message="conditional"></small>
+                                        </div>
+                                        ${UnitModalView.renderFolderTypeSelect(
+                                            "conditional-folder-type",
+                                            "conditionalFolderType",
+                                            "Tipo da pasta"
+                                        )}
                                         <div class="form-field">
                                             <label class="form-label" for="conditional-channel">Canal</label>
                                             <select class="form-control" id="conditional-channel"
@@ -189,6 +212,18 @@ export class UnitModalView {
         `;
     }
 
+    static renderFolderTypeSelect(id, name, label = "Tipo") {
+        return `
+            <div class="form-field">
+                <label class="form-label" for="${id}">${label}</label>
+                <select class="form-control" id="${id}" name="${name}">
+                    <option value=""></option>
+                    ${UnitModalView.renderOptions(FOLDER_TYPE_OPTIONS)}
+                </select>
+            </div>
+        `;
+    }
+
     static open(rootElement, unit) {
         const modal = rootElement.querySelector("#unit-modal");
         const form = rootElement.querySelector("#unit-form");
@@ -229,6 +264,8 @@ export class UnitModalView {
         UnitModalView.clearConditionalEditor(form);
         UnitModalView.renderConditionalList(rootElement);
         UnitModalView.updatePartnerFields(rootElement, "unit", unit.channel);
+        UnitModalView.clearFolderLookupMessage(rootElement, "unit");
+        UnitModalView.clearFolderLookupMessage(rootElement, "conditional");
 
         modal.classList.add("is-open");
         modal.setAttribute("aria-hidden", "false");
@@ -252,6 +289,75 @@ export class UnitModalView {
         [partnerField, managerField].forEach((field) => {
             if (field) field.hidden = !isPartnership;
         });
+    }
+
+    static applyFolderRecord(rootElement, prefix, record, folderNumber) {
+        const form = rootElement.querySelector("#unit-form");
+        const message = rootElement.querySelector(
+            `[data-folder-lookup-message="${prefix}"]`
+        );
+
+        if (!form || !message) {
+            return;
+        }
+
+        if (!String(folderNumber ?? "").trim()) {
+            UnitModalView.clearFolderLookupMessage(rootElement, prefix);
+            return;
+        }
+
+        if (!record) {
+            message.textContent = "Pasta não encontrada no catálogo importado.";
+            message.dataset.state = "error";
+            return;
+        }
+
+        const fields = prefix === "unit"
+            ? {
+                folderType: record.folderType,
+                folderClientName: record.clientName,
+                channel: record.channel,
+                partner: record.partner,
+                superintendent: record.superintendent,
+                director: record.director,
+                partnerManager: record.partnerManager,
+                coordinator: record.coordinator,
+                manager: record.manager,
+                broker: record.broker,
+            }
+            : {
+                conditionalFolderType: record.folderType,
+                conditionalName: record.clientName,
+                conditionalChannel: record.channel,
+                conditionalPartner: record.partner,
+                conditionalSuperintendent: record.superintendent,
+                conditionalDirector: record.director,
+                conditionalPartnerManager: record.partnerManager,
+                conditionalCoordinator: record.coordinator,
+                conditionalManager: record.manager,
+                conditionalBroker: record.broker,
+            };
+
+        Object.entries(fields).forEach(([name, value]) => {
+            if (form.elements[name]) {
+                form.elements[name].value = value ?? "";
+            }
+        });
+
+        UnitModalView.updatePartnerFields(rootElement, prefix, record.channel);
+        message.textContent = `Dados de ${record.clientName} preenchidos pelo catálogo.`;
+        message.dataset.state = "success";
+    }
+
+    static clearFolderLookupMessage(rootElement, prefix) {
+        const message = rootElement.querySelector(
+            `[data-folder-lookup-message="${prefix}"]`
+        );
+
+        if (message) {
+            message.textContent = "";
+            delete message.dataset.state;
+        }
     }
 
     static readConditionalClients(form) {
@@ -352,6 +458,7 @@ export class UnitModalView {
         if (saveButton) saveButton.textContent = "Incluir na fila";
         if (cancelButton) cancelButton.hidden = true;
         UnitModalView.updatePartnerFields(root, "conditional", null);
+        UnitModalView.clearFolderLookupMessage(root, "conditional");
     }
 
     static escape(value) {
@@ -373,7 +480,11 @@ export class UnitModalView {
                     <div class="conditional-client__content">
                         <strong>${UnitModalView.escape(client.name)}</strong>
                         <span>Pasta ${UnitModalView.escape(client.folderNumber || "—")}
-                            ${client.folderType ? `• ${UnitModalView.escape(client.folderType)}` : ""}</span>
+                            ${client.folderType
+                                ? `• ${UnitModalView.escape(
+                                    getFolderTypeLabel(client.folderType) || client.folderType
+                                )}`
+                                : ""}</span>
                     </div>
                     <div class="conditional-client__actions">
                         <button type="button" data-conditional-edit="${client.id}">Substituir</button>

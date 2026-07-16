@@ -38,7 +38,9 @@ O `LocalStorageService` mantém dados operacionais e o `ProjectConfigService` ma
 
 ## Importação
 
-O `FolderImportService` recebe linhas já convertidas, normaliza cabeçalhos,
-valida unidades e aplica dados de pasta e equipe. O `CsvReaderService` é o
-primeiro adaptador de arquivo. Leitores futuros, como XLSX ou uma integração de
-API, poderão produzir o mesmo formato de linhas sem alterar a regra de domínio.
+O `FolderImportService` recebe linhas já convertidas e cria um catálogo de
+clientes indexado pelo número da pasta. O `FolderCatalogService` persiste esse
+catálogo e permite ao modal preencher automaticamente cliente, classificação,
+canal e equipe. O `CsvReaderService` é o primeiro adaptador de arquivo. Leitores
+futuros, como XLSX ou uma integração de API, poderão produzir o mesmo formato de
+linhas sem alterar a regra de domínio.

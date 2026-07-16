@@ -15,8 +15,8 @@ export class FolderImportView {
                         <div>
                             <h3>Atualização em lote</h3>
                             <p>
-                                Importe pasta, cliente, canal e equipe responsável
-                                sem alterar a geometria das unidades.
+                                Cadastre clientes, pastas, canais e equipes para
+                                preenchimento automático no modal da unidade.
                             </p>
                         </div>
 
@@ -44,8 +44,8 @@ export class FolderImportView {
 
                         <p class="folder-import__help">
                             O arquivo pode usar ponto e vírgula ou vírgula.
-                            A coluna Unidade é obrigatória. Use Bloco quando
-                            houver códigos repetidos em blocos diferentes.
+                            Nº da pasta e Nome do cliente são obrigatórios.
+                            O tipo pode ser Ouro, Prata ou Bronze.
                         </p>
                     </div>
 
@@ -88,7 +88,7 @@ export class FolderImportView {
 
     static renderPreview(preview, fileName) {
         const hasErrors = preview.errors.length > 0;
-        const visibleUpdates = preview.updates.slice(0, 20);
+        const visibleRecords = preview.records.slice(0, 20);
 
         return `
             <div class="folder-import__result">
@@ -96,8 +96,8 @@ export class FolderImportView {
                     <div>
                         <strong>${escapeHtml(fileName)}</strong>
                         <p>
-                            ${preview.updates.length} unidade(s) pronta(s)
-                            para atualização
+                            ${preview.records.length} cliente(s) pronto(s)
+                            para cadastro
                             ${hasErrors ? `• ${preview.errors.length} erro(s)` : ""}.
                         </p>
                     </div>
@@ -113,14 +113,14 @@ export class FolderImportView {
 
                 ${hasErrors ? FolderImportView.renderErrors(preview.errors) : ""}
 
-                ${visibleUpdates.length
-                    ? FolderImportView.renderTable(visibleUpdates)
+                ${visibleRecords.length
+                    ? FolderImportView.renderTable(visibleRecords)
                     : ""}
 
-                ${preview.updates.length > visibleUpdates.length
+                ${preview.records.length > visibleRecords.length
                     ? `<p class="folder-import__caption">
-                        Exibindo as primeiras ${visibleUpdates.length} de
-                        ${preview.updates.length} atualizações.
+                        Exibindo os primeiros ${visibleRecords.length} de
+                        ${preview.records.length} clientes.
                     </p>`
                     : ""}
 
@@ -137,7 +137,7 @@ export class FolderImportView {
                         class="modal-button modal-button--primary"
                         type="button"
                         data-folder-import-confirm
-                        ${hasErrors || !preview.updates.length ? "disabled" : ""}
+                        ${hasErrors || !preview.records.length ? "disabled" : ""}
                     >
                         Confirmar importação
                     </button>
@@ -169,15 +169,13 @@ export class FolderImportView {
         `;
     }
 
-    static renderTable(updates) {
+    static renderTable(records) {
         return `
             <div class="folder-import__table-viewport">
                 <table class="folder-import__table">
                     <thead>
                         <tr>
                             <th>Linha</th>
-                            <th>Unidade</th>
-                            <th>Bloco</th>
                             <th>Pasta</th>
                             <th>Tipo</th>
                             <th>Cliente</th>
@@ -186,16 +184,14 @@ export class FolderImportView {
                         </tr>
                     </thead>
                     <tbody>
-                        ${updates.map(({ unit, data, line }) => `
+                        ${records.map((record) => `
                             <tr>
-                                <td>${line}</td>
-                                <td><strong>${escapeHtml(unit.displayCode)}</strong></td>
-                                <td>${escapeHtml(unit.block)}</td>
-                                <td>${escapeHtml(data.folderNumber || "—")}</td>
-                                <td>${escapeHtml(data.folderType || "—")}</td>
-                                <td>${escapeHtml(data.clientName || "—")}</td>
-                                <td>${escapeHtml(data.channelLabel || "—")}</td>
-                                <td>${escapeHtml(data.manager || "—")}</td>
+                                <td>${record.line}</td>
+                                <td><strong>${escapeHtml(record.folderNumber)}</strong></td>
+                                <td>${escapeHtml(record.folderTypeLabel || "—")}</td>
+                                <td>${escapeHtml(record.clientName)}</td>
+                                <td>${escapeHtml(record.channelLabel || "—")}</td>
+                                <td>${escapeHtml(record.manager || "—")}</td>
                             </tr>
                         `).join("")}
                     </tbody>

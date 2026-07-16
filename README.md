@@ -8,7 +8,7 @@ Aplicação web para configurar empreendimentos imobiliários e acompanhar a pos
 - matriz configurável por bloco, pavimentos e colunas;
 - unidades sincronizadas entre configuração e operação;
 - modal comercial com equipe, pasta, observações e fila de condicionais;
-- importação CSV de pastas e equipe com validação antes da confirmação;
+- catálogo CSV de clientes e preenchimento automático pelo número da pasta;
 - persistência local no navegador;
 - indicadores visuais por status e canal de vendas.
 

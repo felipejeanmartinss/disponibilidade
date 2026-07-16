@@ -39,10 +39,11 @@
 
 - interface de repositório de dados;
 - Firestore;
-- autenticação;
+- autenticação Microsoft corporativa via Firebase Authentication;
 - perfis e permissões;
 - trilha de auditoria;
 - migração do LocalStorage.
+- publicação de snapshot sanitizado da matriz em link revogável;
 
 ## Fase 5 — Gestão
 

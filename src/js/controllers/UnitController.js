@@ -2,6 +2,10 @@ import {
     UnitModalView,
 } from "../views/UnitModalView.js";
 
+import {
+    FolderCatalogService,
+} from "../services/FolderCatalogService.js";
+
 export class UnitController {
     constructor({
         rootElement,
@@ -138,6 +142,25 @@ export class UnitController {
     }
 
     handleChange(event) {
+        if (
+            event.target.id === "folder-number" ||
+            event.target.id === "conditional-folder-number"
+        ) {
+            const prefix = event.target.id === "folder-number"
+                ? "unit"
+                : "conditional";
+            const record = FolderCatalogService.findByNumber(
+                event.target.value
+            );
+
+            UnitModalView.applyFolderRecord(
+                this.rootElement,
+                prefix,
+                record,
+                event.target.value
+            );
+        }
+
         if (event.target.id === "unit-channel") {
             UnitModalView.updatePartnerFields(
                 this.rootElement,

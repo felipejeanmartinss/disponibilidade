@@ -65,6 +65,22 @@ textarea.form-control {
     resize: vertical;
 }
 
+.folder-lookup-message {
+    display: block;
+    min-height: 1.25rem;
+    margin-top: var(--spacing-1);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.folder-lookup-message[data-state="success"] {
+    color: var(--color-success);
+}
+
+.folder-lookup-message[data-state="error"] {
+    color: var(--color-danger);
+}
+
 @media (max-width: 640px) {
     .form-grid {
         grid-template-columns: 1fr;

@@ -392,14 +392,11 @@ function bootstrap() {
     const folderImportController =
         new FolderImportController({
             rootElement,
-            units,
             getChannels: () =>
                 AppearanceService.createDisplayChannels(
                     SALES_CHANNEL_OPTIONS,
                     projectConfig.appearance
                 ),
-            onUnitsChange:
-                saveUnitsAndRender,
         });
 
     folderImportController.init();

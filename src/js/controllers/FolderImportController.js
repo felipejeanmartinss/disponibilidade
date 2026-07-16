@@ -3,6 +3,10 @@ import {
 } from "../services/CsvReaderService.js";
 
 import {
+    FolderCatalogService,
+} from "../services/FolderCatalogService.js";
+
+import {
     FolderImportService,
 } from "../services/FolderImportService.js";
 
@@ -13,14 +17,10 @@ import {
 export class FolderImportController {
     constructor({
         rootElement,
-        units,
         getChannels,
-        onUnitsChange,
     }) {
         this.rootElement = rootElement;
-        this.units = units;
         this.getChannels = getChannels;
-        this.onUnitsChange = onUnitsChange;
         this.preview = null;
         this.handleChange = this.handleChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
@@ -49,7 +49,6 @@ export class FolderImportController {
             const rows = await CsvReaderService.read(file);
             this.preview = FolderImportService.prepare(
                 rows,
-                this.units,
                 this.getChannels()
             );
             this.render(FolderImportView.renderPreview(this.preview, file.name));
@@ -79,11 +78,19 @@ export class FolderImportController {
         }
 
         try {
-            FolderImportService.applyPrepared(this.preview);
-            const importedCount = this.preview.updates.length;
+            if (!this.preview || this.preview.errors.length) {
+                throw new Error("Corrija os erros antes de confirmar a importação.");
+            }
+
+            FolderCatalogService.upsert(
+                this.preview.records.map(({ line, ...record }) => record)
+            );
+            const importedCount = this.preview.records.length;
             this.preview = null;
-            this.onUnitsChange();
-            window.alert(`${importedCount} unidade(s) atualizada(s) com sucesso.`);
+            this.reset();
+            window.alert(
+                `${importedCount} cliente(s) incluído(s) ou atualizado(s) no catálogo.`
+            );
         } catch (error) {
             window.alert(error.message);
         }
@@ -112,8 +119,8 @@ export class FolderImportController {
 
     downloadTemplate() {
         const content = [
-            "Unidade;Bloco;Nº da pasta;Tipo da pasta;Nome do cliente;Canal;Parceira;Superintendente;Diretor;Gerente Parceiro;Coordenador;Gerente;Corretor",
-            "803;Bloco Único;000123;Reserva;Cliente exemplo;Lopes Rio;;;;;Coordenação;Gerência;Corretor",
+            "Nº da pasta;Tipo da pasta;Nome do cliente;Canal;Parceira;Superintendente;Diretor;Gerente Parceiro;Coordenador;Gerente;Corretor",
+            "000123;Ouro;Cliente exemplo;Lopes Rio;;;Diretor;;;Gerente;Corretor",
         ].join("\r\n");
         const blob = new Blob(["\uFEFF", content], {
             type: "text/csv;charset=utf-8",
