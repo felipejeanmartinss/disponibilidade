@@ -31,3 +31,18 @@ de clientes.
 O link não deve ser considerado secreto. Qualquer pessoa que receber o endereço
 poderá visualizar o snapshot enquanto ele estiver ativo. A revogação do link
 será adicionada em uma evolução posterior usando o campo `is_active`.
+
+## Empreendimento não sincronizado
+
+Se a publicação informar que o empreendimento não está sincronizado:
+
+1. execute novamente a migration
+   `supabase/migrations/202607150001_initial_schema.sql` no SQL Editor;
+2. confirme que a execução termina com sucesso, pois ela também cria políticas,
+   permissões e gatilhos depois das tabelas;
+3. saia e entre novamente na aplicação;
+4. abra a Operação e gere o link outra vez.
+
+A migration atual é idempotente e pode ser reaplicada. Se o Supabase recusar a
+sincronização, a interface passa a mostrar também a mensagem original do banco,
+facilitando a identificação da política ou permissão ausente.

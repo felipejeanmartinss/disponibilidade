@@ -520,6 +520,41 @@ async function bootstrap() {
             renderApplication();
         };
 
+    const ensurePersistenceReady =
+        async () => {
+            if (
+                persistenceService.getProjectId()
+            ) {
+                return;
+            }
+
+            try {
+                await persistenceService.initialize({
+                    projectConfig,
+                    units,
+                    folderCatalog:
+                        FolderCatalogService.load(),
+                });
+            } catch (error) {
+                const detail =
+                    error?.message
+                        ? ` Detalhe: ${error.message}`
+                        : "";
+
+                throw new Error(
+                    `Não foi possível sincronizar o empreendimento com o Supabase.${detail}`
+                );
+            }
+
+            if (
+                !persistenceService.getProjectId()
+            ) {
+                throw new Error(
+                    "O Supabase não retornou um empreendimento autorizado para este usuário."
+                );
+            }
+        };
+
     renderApplication();
 
     const matrixEditorController =
@@ -578,6 +613,8 @@ async function bootstrap() {
 
             onPublishPublicMap:
                 async () => {
+                    await ensurePersistenceReady();
+
                     const channels =
                         AppearanceService.createDisplayChannels(
                             SALES_CHANNEL_OPTIONS,

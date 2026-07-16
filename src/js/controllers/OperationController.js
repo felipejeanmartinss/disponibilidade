@@ -117,7 +117,6 @@ export class OperationController {
 
     applyFilters() {
         const filters = this.filters;
-        let visibleCount = 0;
 
         this.rootElement.querySelectorAll("[data-operation-unit]").forEach((element) => {
             const matches =
@@ -127,7 +126,6 @@ export class OperationController {
                 (!filters.channel || element.dataset.channel === filters.channel) &&
                 (!filters.search || element.dataset.code.toLowerCase().includes(filters.search));
             element.hidden = !matches;
-            if (matches) visibleCount += 1;
         });
 
         this.rootElement.querySelectorAll("[data-operation-block]").forEach((element) => {
@@ -135,8 +133,6 @@ export class OperationController {
                 element.dataset.operationBlock !== filters.block;
         });
 
-        const result = this.rootElement.querySelector("[data-operation-results]");
-        if (result) result.textContent = `${visibleCount} unidades exibidas`;
     }
 
     setZoom(value) {

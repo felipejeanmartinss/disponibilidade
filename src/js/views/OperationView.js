@@ -39,13 +39,6 @@ export class OperationView {
 
             <section class="workspace-panel operation-workspace" data-operation-workspace>
                 <header class="workspace-panel__header">
-                    <div class="operation-heading">
-                        <h2 class="workspace-panel__title">Mapa de disponibilidade</h2>
-                        <span class="operation-results" data-operation-results>
-                            ${units.length} unidades exibidas
-                        </span>
-                    </div>
-
                     <div class="status-legend" aria-label="Legenda de status">
                         ${OperationView.renderStatusLegend(statuses)}
                     </div>
