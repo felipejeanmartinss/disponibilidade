@@ -34,8 +34,8 @@ de clientes.
   verticalmente;
 - em telas verticais de grande formato, a altura dos pavimentos se ajusta para
   exibir a matriz completa;
-- em telas estreitas, o texto do status permanece disponível para leitores de
-  tela, enquanto a cor do card representa visualmente o status.
+- em telas estreitas, o texto do status permanece visível em formato compacto,
+  acompanhado pela cor do card.
 
 O link não deve ser considerado secreto. Qualquer pessoa que receber o endereço
 poderá visualizar o snapshot enquanto ele estiver ativo. A revogação do link
