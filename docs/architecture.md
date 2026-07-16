@@ -36,8 +36,10 @@ Uma unidade contém:
 
 O `LocalStorageService` mantém os dados operacionais durante a transição. O
 `SupabaseClientService` inicializa a conexão remota e a migration versionada cria
-o schema PostgreSQL com RLS. A próxima etapa adicionará repositórios para migrar
-LocalStorage sem alterar Views ou Models.
+o schema PostgreSQL com RLS. O `SupabasePersistenceService` carrega ou cria o
+projeto do usuário, sincroniza configuração, unidades e catálogo, mantendo o
+LocalStorage como contingência. Consulte o
+[fluxo de persistência](supabase-persistence.md).
 
 ## Importação
 

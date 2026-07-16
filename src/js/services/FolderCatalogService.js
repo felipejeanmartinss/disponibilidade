@@ -1,6 +1,8 @@
 const STORAGE_KEY = "disponibilidade-catalogo-pastas";
 
 export class FolderCatalogService {
+    static syncHandler = null;
+
     static load() {
         try {
             const storedData = localStorage.getItem(STORAGE_KEY);
@@ -22,13 +24,31 @@ export class FolderCatalogService {
         }
     }
 
-    static save(records) {
+    static save(
+        records,
+        { synchronize = true } = {}
+    ) {
         if (!Array.isArray(records)) {
             throw new Error("O catálogo precisa receber uma lista de clientes.");
         }
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+
+        if (
+            synchronize &&
+            typeof FolderCatalogService.syncHandler === "function"
+        ) {
+            void FolderCatalogService.syncHandler(records);
+        }
+
         return records;
+    }
+
+    static setSyncHandler(handler) {
+        FolderCatalogService.syncHandler =
+            typeof handler === "function"
+                ? handler
+                : null;
     }
 
     static findByNumber(folderNumber) {

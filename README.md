@@ -28,8 +28,9 @@ src/
     └── views/        Renderização da interface
 ```
 
-Consulte [a arquitetura](docs/architecture.md), [o roadmap](docs/roadmap.md) e
-[a configuração do Supabase](docs/supabase-setup.md).
+Consulte [a arquitetura](docs/architecture.md), [o roadmap](docs/roadmap.md),
+[a configuração do Supabase](docs/supabase-setup.md) e
+[a estratégia de persistência](docs/supabase-persistence.md).
 
 ## Execução local
 

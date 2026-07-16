@@ -24,6 +24,10 @@ import {
 } from "./models/Unit.js";
 
 import {
+    ProjectConfig,
+} from "./models/ProjectConfig.js";
+
+import {
     LocalStorageService,
 } from "./services/LocalStorageService.js";
 
@@ -36,8 +40,16 @@ import {
 } from "./services/AppearanceService.js";
 
 import {
+    FolderCatalogService,
+} from "./services/FolderCatalogService.js";
+
+import {
     SupabaseClientService,
 } from "./services/SupabaseClientService.js";
+
+import {
+    SupabasePersistenceService,
+} from "./services/SupabasePersistenceService.js";
 
 import {
     UnitFactory,
@@ -174,7 +186,9 @@ function applyStoredOperationalData(
 }
 
 function createUnitsFromConfiguration(
-    projectConfig
+    projectConfig,
+    storedUnitData =
+        LocalStorageService.load()
 ) {
     const generatedUnits =
         UnitFactory
@@ -184,7 +198,7 @@ function createUnitsFromConfiguration(
 
     const storedUnits =
         createUnitsFromStoredData(
-            LocalStorageService.load()
+            storedUnitData
         );
 
     return applyStoredOperationalData(
@@ -204,7 +218,7 @@ function replaceUnits(
     );
 }
 
-function bootstrap() {
+async function bootstrap() {
     const rootElement =
         document.getElementById(
             "app"
@@ -228,15 +242,81 @@ function bootstrap() {
     const defaultProjectConfig =
         createDefaultProjectConfig();
 
-    const projectConfig =
+    let projectConfig =
         ProjectConfigService.load(
             defaultProjectConfig
         );
 
+    let storedUnitData =
+        LocalStorageService.load();
+
+    const localUnits =
+        createUnitsFromConfiguration(
+            projectConfig,
+            storedUnitData
+        );
+
+    const persistenceService =
+        new SupabasePersistenceService();
+
+    try {
+        const remoteSnapshot =
+            await persistenceService.initialize({
+                projectConfig,
+                units:
+                    localUnits,
+                folderCatalog:
+                    FolderCatalogService.load(),
+            });
+
+        if (remoteSnapshot) {
+            projectConfig =
+                new ProjectConfig(
+                    remoteSnapshot.projectConfig
+                );
+
+            storedUnitData =
+                remoteSnapshot.units;
+
+            ProjectConfigService.save(
+                projectConfig
+            );
+
+            LocalStorageService.save(
+                storedUnitData
+            );
+
+            FolderCatalogService.save(
+                remoteSnapshot.folderCatalog,
+                {
+                    synchronize: false,
+                }
+            );
+
+            console.info(
+                "Dados carregados do Supabase."
+            );
+        }
+    } catch (error) {
+        console.warn(
+            "Não foi possível carregar os dados remotos; mantendo a cópia local.",
+            error
+        );
+    }
+
     const units =
         createUnitsFromConfiguration(
-            projectConfig
+            projectConfig,
+            storedUnitData
         );
+
+    FolderCatalogService.setSyncHandler(
+        (records) =>
+            persistenceService
+                .saveFolderCatalog(
+                    records
+                )
+    );
 
     const state = {
         activeMode:
@@ -300,6 +380,11 @@ function bootstrap() {
                 projectConfig
             );
 
+            void persistenceService
+                .saveProjectConfig(
+                    projectConfig
+                );
+
             renderApplication();
         };
 
@@ -309,6 +394,9 @@ function bootstrap() {
                 units
             );
 
+            void persistenceService
+                .saveUnits(units);
+
             renderApplication();
         };
 
@@ -317,6 +405,11 @@ function bootstrap() {
             ProjectConfigService.save(
                 projectConfig
             );
+
+            void persistenceService
+                .saveProjectConfig(
+                    projectConfig
+                );
 
             const regeneratedUnits =
                 createUnitsFromConfiguration(
@@ -331,6 +424,9 @@ function bootstrap() {
             LocalStorageService.save(
                 units
             );
+
+            void persistenceService
+                .saveUnits(units);
 
             renderApplication();
         };
@@ -428,7 +524,7 @@ function bootstrap() {
 }
 
 try {
-    bootstrap();
+    await bootstrap();
 } catch (error) {
     console.error(
         "Falha ao iniciar a aplicação:",

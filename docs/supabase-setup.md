@@ -32,6 +32,6 @@ repositórios remotos e rotina de migração ainda estão sendo construídos.
 
 ## Próxima etapa
 
-Depois de aplicar a migration, será possível testar a conexão e iniciar a branch
-de persistência. O login Microsoft será configurado em seguida, pois as políticas
-internas exigem uma sessão autenticada.
+A camada de persistência já está preparada com fallback local. O login Microsoft
+é a próxima etapa, pois as políticas internas exigem uma sessão autenticada para
+ativar a sincronização remota.
