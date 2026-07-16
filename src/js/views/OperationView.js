@@ -1,8 +1,4 @@
 import {
-    UNIT_STATUS_OPTIONS,
-} from "../config/statuses.js";
-
-import {
     OperationMatrixView,
 } from "./OperationMatrixView.js";
 
@@ -11,32 +7,35 @@ import {
 } from "../utils/html.js";
 
 export class OperationView {
-    static render({ channels, units, projectConfig }) {
+    static render({ channels, statuses, units, projectConfig }) {
         const matrices = projectConfig.blocks
             .map((block) => `
                 <section class="operation-block" data-operation-block="${block.id}">
                     ${projectConfig.blocks.length > 1
                         ? `<h3 class="operation-block__title">${block.name}</h3>`
                         : ""}
-                    ${OperationMatrixView.render({ block, units, channels })}
+                    ${OperationMatrixView.render({ block, units, channels, statuses })}
                 </section>
             `)
             .join("");
 
         return `
-            <section class="toolbar" aria-label="Filtros do painel">
-                ${OperationView.renderSelect("block-filter", "Bloco",
-                    projectConfig.blocks.map(({ id, name }) => ({ value: id, label: name })))}
-                ${OperationView.renderSelect("floor-filter", "Andar",
-                    OperationView.getFloorOptions(projectConfig))}
-                ${OperationView.renderSelect("status-filter", "Status", UNIT_STATUS_OPTIONS)}
-                ${OperationView.renderSelect("channel-filter", "Canal", channels)}
-                <div class="toolbar-field">
-                    <label class="toolbar-field__label" for="unit-search">Buscar unidade</label>
-                    <input class="toolbar-field__control" id="unit-search"
-                        type="search" placeholder="Ex.: 803">
-                </div>
-            </section>
+            <details class="filter-panel">
+                <summary class="filter-panel__summary">Filtros</summary>
+                <section class="toolbar" aria-label="Filtros do painel">
+                    ${OperationView.renderSelect("block-filter", "Bloco",
+                        projectConfig.blocks.map(({ id, name }) => ({ value: id, label: name })))}
+                    ${OperationView.renderSelect("floor-filter", "Andar",
+                        OperationView.getFloorOptions(projectConfig))}
+                    ${OperationView.renderSelect("status-filter", "Status", statuses)}
+                    ${OperationView.renderSelect("channel-filter", "Canal", channels)}
+                    <div class="toolbar-field">
+                        <label class="toolbar-field__label" for="unit-search">Buscar unidade</label>
+                        <input class="toolbar-field__control" id="unit-search"
+                            type="search" placeholder="Ex.: 803">
+                    </div>
+                </section>
+            </details>
 
             <section class="workspace-panel operation-workspace" data-operation-workspace>
                 <header class="workspace-panel__header">
@@ -64,7 +63,7 @@ export class OperationView {
                 </div>
 
                 <footer class="status-legend" aria-label="Legenda de status">
-                    ${OperationView.renderStatusLegend()}
+                    ${OperationView.renderStatusLegend(statuses)}
                 </footer>
             </section>
         `;
@@ -92,12 +91,12 @@ export class OperationView {
         })).reverse();
     }
 
-    static renderStatusLegend() {
-        return UNIT_STATUS_OPTIONS.map((status) => `
+    static renderStatusLegend(statuses) {
+        return statuses.map((status) => `
             <span class="status-legend__item">
                 <span class="status-legend__sample" data-status="${status.value}"
-                    aria-hidden="true"></span>
-                ${status.label}
+                    style="background: ${status.color};" aria-hidden="true"></span>
+                ${escapeHtml(status.label)}
             </span>
         `).join("");
     }

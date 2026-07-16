@@ -22,10 +22,11 @@ export class UnitModalView {
     }
 
     static render(
-        channels = SALES_CHANNEL_OPTIONS
+        channels = SALES_CHANNEL_OPTIONS,
+        statuses = UNIT_STATUS_OPTIONS
     ) {
         const statusOptions =
-            UnitModalView.renderOptions(UNIT_STATUS_OPTIONS);
+            UnitModalView.renderOptions(statuses);
 
         const channelOptions =
             UnitModalView.renderOptions(channels);
@@ -63,7 +64,7 @@ export class UnitModalView {
                                         </select>
                                     </div>
                                     <div class="form-field form-field--full" id="partner-field" hidden>
-                                        <label class="form-label" for="unit-partner">Parceira</label>
+                                        <label class="form-label" for="unit-partner">Parceiro</label>
                                         <input class="form-control" id="unit-partner"
                                             name="partner" type="text">
                                     </div>
@@ -73,8 +74,8 @@ export class UnitModalView {
                             <section class="modal__section">
                                 <h3 class="modal__section-title">Equipe responsável</h3>
                                 <div class="form-grid">
-                                    ${UnitModalView.renderInput("unit-superintendent", "superintendent", "Superintendente")}
                                     ${UnitModalView.renderInput("unit-director", "director", "Diretor")}
+                                    ${UnitModalView.renderInput("unit-superintendent", "superintendent", "Superintendente")}
                                     ${UnitModalView.renderInput("unit-coordinator", "coordinator", "Coordenador")}
                                     <div class="form-field form-field--full"
                                         id="partner-manager-field" hidden>
@@ -125,12 +126,12 @@ export class UnitModalView {
                                             </select>
                                         </div>
                                         <div class="form-field" id="conditional-partner-field" hidden>
-                                            <label class="form-label" for="conditional-partner">Parceira</label>
+                                            <label class="form-label" for="conditional-partner">Parceiro</label>
                                             <input class="form-control" id="conditional-partner"
                                                 name="conditionalPartner" type="text">
                                         </div>
-                                        ${UnitModalView.renderInput("conditional-superintendent", "conditionalSuperintendent", "Superintendente")}
                                         ${UnitModalView.renderInput("conditional-director", "conditionalDirector", "Diretor")}
+                                        ${UnitModalView.renderInput("conditional-superintendent", "conditionalSuperintendent", "Superintendente")}
                                         <div class="form-field" id="conditional-partner-manager-field" hidden>
                                             <label class="form-label" for="conditional-partner-manager">
                                                 Gerente Parceiro

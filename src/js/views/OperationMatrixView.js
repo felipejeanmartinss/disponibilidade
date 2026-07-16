@@ -7,6 +7,7 @@ export class OperationMatrixView {
         block,
         units,
         channels,
+        statuses,
     }) {
         if (!block) {
             return `
@@ -89,7 +90,8 @@ export class OperationMatrixView {
                     matrixContent.push(
                         OperationMatrixView.renderUnit(
                             anchoredUnit,
-                            channels
+                            channels,
+                            statuses
                         )
                     );
 
@@ -196,7 +198,8 @@ export class OperationMatrixView {
 
     static renderUnit(
         unit,
-        channels
+        channels,
+        statuses
     ) {
         return `
             <div
@@ -217,7 +220,8 @@ export class OperationMatrixView {
             >
                 ${UnitCardView.render(
                     unit,
-                    channels
+                    channels,
+                    statuses
                 )}
             </div>
         `;

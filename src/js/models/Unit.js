@@ -1,11 +1,9 @@
 import {
     UNIT_STATUS,
-    getStatusByValue,
 } from "../config/statuses.js";
 
 import {
     SALES_CHANNEL,
-    getChannelByValue,
 } from "../config/channels.js";
 
 export class Unit {
@@ -150,9 +148,9 @@ export class Unit {
     }
 
     validateStatus(status) {
-        return getStatusByValue(
-            status
-        ).value;
+        const normalized = String(status ?? "").trim();
+
+        return normalized || UNIT_STATUS.AVAILABLE;
     }
 
     validateChannel(
@@ -162,14 +160,7 @@ export class Unit {
             return null;
         }
 
-        const validChannel =
-            getChannelByValue(
-                channel
-            );
-
-        return validChannel
-            ? validChannel.value
-            : null;
+        return String(channel).trim() || null;
     }
 
     normalizePartner(

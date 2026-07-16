@@ -12,6 +12,10 @@ import {
 } from "./config/channels.js";
 
 import {
+    UNIT_STATUS_OPTIONS,
+} from "./config/statuses.js";
+
+import {
     createDefaultProjectConfig,
 } from "../data/defaultProject.js";
 
@@ -237,12 +241,21 @@ function bootstrap() {
                     projectConfig.appearance
                 );
 
+            const displayStatuses =
+                AppearanceService.createDisplayStatuses(
+                    UNIT_STATUS_OPTIONS,
+                    projectConfig.appearance
+                );
+
             appView.render({
                 config:
                     APP_CONFIG,
 
                 channels:
                     displayChannels,
+
+                statuses:
+                    displayStatuses,
 
                 units,
 

@@ -10,6 +10,7 @@ export class ConfigurationView {
     static render({
         projectConfig,
         channels,
+        statuses,
     }) {
         const block =
             projectConfig.blocks[0];
@@ -65,6 +66,7 @@ export class ConfigurationView {
 
                 ${AppearanceView.render({
                     channels,
+                    statuses,
                     projectConfig,
                 })}
 

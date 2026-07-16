@@ -34,14 +34,26 @@ export class AppearanceService {
         const channelLabels = {};
         const channelShortLabels = {};
 
-        UNIT_STATUS_OPTIONS.forEach((status) => {
+        const statuses =
+            AppearanceService.createDisplayStatuses(
+                UNIT_STATUS_OPTIONS,
+                projectConfig.appearance
+            );
+
+        const channels =
+            AppearanceService.createDisplayChannels(
+                SALES_CHANNEL_OPTIONS,
+                projectConfig.appearance
+            );
+
+        statuses.forEach((status) => {
             statusColors[status.value] =
                 formData.get(
                     `status-color-${status.value}`
                 );
         });
 
-        SALES_CHANNEL_OPTIONS.forEach((channel) => {
+        channels.forEach((channel) => {
             channelColors[channel.value] =
                 formData.get(
                     `channel-color-${channel.value}`
@@ -56,6 +68,53 @@ export class AppearanceService {
                 );
         });
 
+        const customStatuses = [
+            ...projectConfig.appearance.customStatuses,
+        ];
+        const customChannels = [
+            ...projectConfig.appearance.customChannels,
+        ];
+
+        const newStatusLabel = String(
+            formData.get("new-status-label") ?? ""
+        ).trim();
+
+        if (newStatusLabel) {
+            const value = AppearanceService.createUniqueValue(
+                newStatusLabel,
+                statuses.map((status) => status.value)
+            );
+            customStatuses.push({ value, label: newStatusLabel });
+            statusColors[value] =
+                formData.get("new-status-color") || "#64748B";
+        }
+
+        const newChannelLabel = String(
+            formData.get("new-channel-label") ?? ""
+        ).trim();
+
+        if (newChannelLabel) {
+            const value = AppearanceService.createUniqueValue(
+                newChannelLabel,
+                channels.map((channel) => channel.value)
+            );
+            const shortLabel = String(
+                formData.get("new-channel-short-label") ||
+                    newChannelLabel
+            ).trim();
+
+            customChannels.push({
+                value,
+                label: newChannelLabel,
+                shortLabel,
+                logoPath: "",
+            });
+            channelColors[value] =
+                formData.get("new-channel-color") || "#64748B";
+            channelLabels[value] = newChannelLabel;
+            channelShortLabels[value] = shortLabel;
+        }
+
         projectConfig.update({
             appearance: {
                 ...projectConfig.appearance,
@@ -63,6 +122,8 @@ export class AppearanceService {
                 channelColors,
                 channelLabels,
                 channelShortLabels,
+                customStatuses,
+                customChannels,
             },
         });
 
@@ -113,7 +174,12 @@ export class AppearanceService {
         channels,
         appearance
     ) {
-        return channels.map((channel) => ({
+        const allChannels = [
+            ...channels,
+            ...(appearance.customChannels ?? []),
+        ];
+
+        return allChannels.map((channel) => ({
             ...channel,
             label:
                 appearance.channelLabels?.[
@@ -128,6 +194,46 @@ export class AppearanceService {
                     channel.value
                 ] ?? "#94A3B8",
         }));
+    }
+
+    static createDisplayStatuses(
+        statuses,
+        appearance
+    ) {
+        return [
+            ...statuses,
+            ...(appearance.customStatuses ?? []),
+        ].map((status) => {
+            const color =
+                appearance.statusColors?.[status.value] ??
+                "#64748B";
+
+            return {
+                ...status,
+                color,
+                textColor:
+                    AppearanceService.getContrastColor(color),
+            };
+        });
+    }
+
+    static createUniqueValue(label, existingValues) {
+        const base = String(label)
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "") || "item";
+
+        let value = base;
+        let suffix = 2;
+
+        while (existingValues.includes(value)) {
+            value = `${base}-${suffix}`;
+            suffix += 1;
+        }
+
+        return value;
     }
 
     static getContrastColor(color) {

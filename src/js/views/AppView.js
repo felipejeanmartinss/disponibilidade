@@ -42,6 +42,7 @@ export class AppView {
     render({
         config,
         channels,
+        statuses,
         units,
         modeOptions,
         activeMode,
@@ -57,6 +58,7 @@ export class AppView {
             this.renderModeContent({
                 activeMode,
                 channels,
+                statuses,
                 units,
                 projectConfig,
             });
@@ -130,7 +132,7 @@ export class AppView {
                     </div>
                 </footer>
 
-                ${UnitModalView.render(channels)}
+                ${UnitModalView.render(channels, statuses)}
             </div>
         `;
     }
@@ -138,6 +140,7 @@ export class AppView {
     renderModeContent({
         activeMode,
         channels,
+        statuses,
         units,
         projectConfig,
     }) {
@@ -147,6 +150,7 @@ export class AppView {
                     ConfigurationView.render({
                         projectConfig,
                         channels,
+                        statuses,
                     })
                 );
 
@@ -163,6 +167,7 @@ export class AppView {
                 return (
                     OperationView.render({
                         channels,
+                        statuses,
                         units,
                         projectConfig,
                     })

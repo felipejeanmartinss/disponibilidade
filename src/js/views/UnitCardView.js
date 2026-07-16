@@ -25,9 +25,13 @@ const TIMED_STATUSES = new Set([
 export class UnitCardView {
     static render(
         unit,
-        channels = null
+        channels = null,
+        statuses = null
     ) {
-        const status = getStatusByValue(unit.status);
+        const status =
+            statuses?.find(
+                (item) => item.value === unit.status
+            ) ?? getStatusByValue(unit.status);
         const channel = unit.channel
             ? channels?.find(
                 (item) =>
@@ -42,7 +46,6 @@ export class UnitCardView {
         const channelIndicator = channel
             ? `
                 <span class="unit-card__channel-logo">
-                    <img src="${channel.logoPath}" alt="" aria-hidden="true">
                     <span class="unit-card__channel-label">
                         ${escapeHtml(channel.shortLabel)}
                     </span>
@@ -66,7 +69,10 @@ export class UnitCardView {
                 data-status="${status.value}" data-channel="${channel?.value ?? ""}"
                 data-manager="${UnitCardView.escape(unit.manager)}"
                 data-visual-variant="${unit.visualVariant ?? "default"}"
-                aria-label="Unidade ${escapeHtml(displayCode)}. Tipo ${unitType.label}. Status ${status.label}. ${channel ? `Canal ${escapeHtml(channel.label)}.` : ""}">
+                style="--unit-card-background: ${status.color ?? "#DCDCDC"};
+                    --unit-card-text: ${status.textColor ?? "#0F172A"};
+                    --channel-accent: ${channel?.color ?? "#94A3B8"};"
+                aria-label="Unidade ${escapeHtml(displayCode)}. Tipo ${unitType.label}. Status ${escapeHtml(status.label)}. ${channel ? `Canal ${escapeHtml(channel.label)}.` : ""}">
                 ${channelIndicator}
                 ${timer}
 
@@ -74,7 +80,7 @@ export class UnitCardView {
 
                 <span class="unit-card__tooltip" role="tooltip">
                     <span><strong>Tipo:</strong> ${unitType.label}</span>
-                    <span><strong>Status:</strong> ${status.label}</span>
+                    <span><strong>Status:</strong> ${escapeHtml(status.label)}</span>
                     <span><strong>Canal:</strong> ${channel ? escapeHtml(channel.label) : "—"}</span>
                     <span><strong>Gerente:</strong> ${UnitCardView.escape(unit.manager || "—")}</span>
                 </span>
@@ -107,14 +113,16 @@ export class UnitCardView {
 
     static renderList(
         units,
-        channels = null
+        channels = null,
+        statuses = null
     ) {
         return units
             .map(
                 (unit) =>
                     UnitCardView.render(
                         unit,
-                        channels
+                        channels,
+                        statuses
                     )
             )
             .join("");

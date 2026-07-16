@@ -60,6 +60,10 @@ const DEFAULT_APPEARANCE =
 
         channelShortLabels:
             DEFAULT_CHANNEL_SHORT_LABELS,
+
+        customStatuses: [],
+
+        customChannels: [],
     });
 
 export class ProjectConfig {
@@ -198,6 +202,17 @@ export class ProjectConfig {
             }
         );
 
+        Object.entries(providedColors ?? {}).forEach(
+            ([key, color]) => {
+                if (!(key in colors) && /^[a-z0-9-]+$/.test(key)) {
+                    colors[key] = this.normalizeColor(
+                        color,
+                        "#64748B"
+                    );
+                }
+            }
+        );
+
         return colors;
     }
 
@@ -216,7 +231,56 @@ export class ProjectConfig {
             }
         );
 
+        Object.entries(providedTexts ?? {}).forEach(
+            ([key, value]) => {
+                if (!(key in texts) && /^[a-z0-9-]+$/.test(key)) {
+                    texts[key] = this.normalizeText(value, key);
+                }
+            }
+        );
+
         return texts;
+    }
+
+    normalizeCustomStatuses(statuses) {
+        if (!Array.isArray(statuses)) {
+            return [];
+        }
+
+        return statuses
+            .map((status) => ({
+                value: String(status?.value ?? "")
+                    .trim()
+                    .toLowerCase(),
+                label: String(status?.label ?? "").trim(),
+            }))
+            .filter((status) =>
+                /^[a-z0-9-]+$/.test(status.value) &&
+                status.label
+            );
+    }
+
+    normalizeCustomChannels(channels) {
+        if (!Array.isArray(channels)) {
+            return [];
+        }
+
+        return channels
+            .map((channel) => ({
+                value: String(channel?.value ?? "")
+                    .trim()
+                    .toLowerCase(),
+                label: String(channel?.label ?? "").trim(),
+                shortLabel: String(
+                    channel?.shortLabel ?? channel?.label ?? ""
+                ).trim(),
+                logoPath: String(channel?.logoPath ?? "").trim(),
+            }))
+            .filter((channel) =>
+                /^[a-z0-9-]+$/.test(channel.value) &&
+                channel.label &&
+                channel.shortLabel
+            );
     }
 
     normalizeAppearance(
@@ -282,6 +346,16 @@ export class ProjectConfig {
                     appearance
                         ?.channelShortLabels,
                     DEFAULT_CHANNEL_SHORT_LABELS
+                ),
+
+            customStatuses:
+                this.normalizeCustomStatuses(
+                    appearance?.customStatuses
+                ),
+
+            customChannels:
+                this.normalizeCustomChannels(
+                    appearance?.customChannels
                 ),
         };
     }
@@ -371,6 +445,16 @@ export class ProjectConfig {
                     ...this.appearance
                         .channelShortLabels,
                 },
+
+                customStatuses:
+                    this.appearance.customStatuses.map(
+                        (status) => ({ ...status })
+                    ),
+
+                customChannels:
+                    this.appearance.customChannels.map(
+                        (channel) => ({ ...channel })
+                    ),
             },
         };
     }
